@@ -25,6 +25,11 @@ const theme = createTheme({
         background: {
             default: "#F3F4F7",
             paper: "#FFFFFF",
+            input: "#F6F6F6",
+        },
+        text: {
+            primary: "#271D4E", // main font color
+            secondary: "#6B6B8D", // lighter/subtitle color
         },
     },
     components: {

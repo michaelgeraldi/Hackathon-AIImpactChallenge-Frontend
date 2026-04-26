@@ -9,10 +9,10 @@ import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNone
 
 export default function ClientLayout({ children }) {
     return (
-        <Container maxWidth="xl" disableGutters sx={{ px: 4, pt: 5, m: 0 }}>
+        <Container maxWidth="xl" disableGutters sx={{ px: 4, py: 5, m: 0 }}>
             <Stack
                 sx={{
-                    mb: 3.5,
+                    mb: 3,
                     justifyContent: "space-between",
                     alignItems: "center",
                 }}
