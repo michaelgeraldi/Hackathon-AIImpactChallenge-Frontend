@@ -16,74 +16,28 @@ import CustomCard from "../_components/CustomCard";
 import CustomButton from "../_components/CustomButton";
 import CustomBarChart from "../_components/CustomBarChart";
 import CustomDonutChart from "../_components/CustomDonutChart";
+import { useNavigationBarContext } from "../_components/NavigationBar";
+
+// Pages imports
+import ClientOverviewPage from "./_components/ClientOverviewPage";
 
 // Icon imports
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AddIcon from "@mui/icons-material/Add";
 import CustomChatCard from "../_components/CustomChatCard";
 
-export default function ClientHomePage() {
-    return (
-        <Box>
-            <CollapsibleTitle
-                title="Project name"
-                subtitle="Project description"
-                defaultExpanded={false}
-            >
-                <Typography>
-                    This is the hidden content that appears when expanded.
-                </Typography>
-            </CollapsibleTitle>
+export default function ClientPage() {
+    const { active, setActive } = useNavigationBarContext();
 
-            <Stack sx={{ mt: 3 }} direction="row" spacing={2.5}>
-                {/* Statistics Cards */}
-                <Grid container spacing={2.5} sx={{ flex: 1 }}>
-                    <StatisticsCard title="Team Members" value="67" />
-                    <StatisticsCard title="Tasks Completed" value="67%" />
-                    <StatisticsCard title="Under Review" value="67" />
-                    <StatisticsCard title="Overdue Tasks" value="67" />
-                </Grid>
-
-                {/* Buttons */}
-                <Stack
-                    spacing={2}
-                    sx={{
-                        mt: 3,
-                        alignItems: "center",
-                        justifyContent: "center",
-                    }}
-                >
-                    <CustomButton startIcon={<AddIcon />} fullWidth>
-                        Add New Worker
-                    </CustomButton>
-                    <CustomButton startIcon={<AddIcon />} fullWidth>
-                        Add New Task
-                    </CustomButton>
-                </Stack>
-            </Stack>
-
-            <Grid container sx={{ mt: 2.5 }} spacing={2.5}>
-                <Grid size={3}>
-                    <CustomCard title="Tracker Detail">
-                        <Box sx={{ mt: 1.5 }}>
-                            <CustomBarChart />
-                        </Box>
-                    </CustomCard>
-                    <CustomCard title="Tracker Detail" sx={{ mt: 2.5 }}>
-                        <Box sx={{ mt: 1.5 }}>
-                            <CustomDonutChart />
-                        </Box>
-                    </CustomCard>
-                </Grid>
-                <Grid size={4.5}>
-                    <CustomCard title="Activity" sx={{height: '100%'}} />
-                </Grid>
-                <Grid size={4.5}>
-                    <CustomChatCard />
-                </Grid>
-            </Grid>
-        </Box>
-    );
+    if (active === "Overview") {
+        return <ClientOverviewPage />;
+    } else if (active === "Tracker") {
+        return <div>Tracker Page</div>;
+    } else if (active === "Report") {
+        return <div>Report Page</div>;
+    } else if (active === "Messages") {
+        return <div>Messages Page</div>;
+    }
 }
 
 function CollapsibleTitle({

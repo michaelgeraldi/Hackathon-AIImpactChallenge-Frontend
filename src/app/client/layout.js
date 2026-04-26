@@ -2,6 +2,7 @@ import { Container, Stack, AvatarGroup, Avatar, Paper } from "@mui/material";
 import Logo from "../_components/Logo";
 import CustomIconButton from "../_components/CustomIconButton";
 import NavigationBar from "../_components/NavigationBar";
+import { NavigationBarProvider } from "../_components/NavigationBar";
 
 // Icon imports
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
@@ -9,66 +10,90 @@ import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNone
 
 export default function ClientLayout({ children }) {
     return (
-        <Container maxWidth="xl" disableGutters sx={{ px: 4, py: 5, m: 0 }}>
-            <Stack
-                sx={{
-                    mb: 3,
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                }}
-                direction="row"
+        <NavigationBarProvider>
+            <Container
+                maxWidth="xl"
+                disableGutters
+                sx={{ px: 4, pt: 3, pb: 5, m: 0 }}
             >
-                {/* Logo */}
-                <Logo />
-
-                {/* Navigation Bar */}
-                <NavigationBar />
-
                 <Stack
-                    direction="row"
-                    spacing={8}
                     sx={{
-                        alignItems: "center",
+                        mb: 3,
                         justifyContent: "space-between",
+                        alignItems: "center",
                     }}
+                    direction="row"
                 >
-                    {/* Avatar Group */}
-                    <Paper
-                        sx={{
-                            px: 1,
-                            py: 1.5,
-                            borderRadius: 999,
-                        }}
-                        elevation={0}
-                    >
-                        <AvatarGroup max={4}>
-                            <Avatar alt="User 1" src="/avatars/avatar1.png" />
-                            <Avatar alt="User 2" src="/avatars/avatar2.png" />
-                            <Avatar alt="User 3" src="/avatars/avatar3.png" />
-                            <Avatar alt="User 4" src="/avatars/avatar4.png" />
-                            <Avatar alt="User 5" src="/avatars/avatar5.png" />
-                        </AvatarGroup>
-                    </Paper>
+                    {/* Logo */}
+                    <Logo />
 
-                    {/* Search, Notifications, User Avatar */}
-                    <Paper
-                        sx={{ px: 1.25, py: 1.5, borderRadius: 999 }}
-                        elevation={0}
+                    {/* Navigation Bar */}
+                    <NavigationBar />
+
+                    <Stack
+                        direction="row"
+                        spacing={8}
+                        sx={{
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                        }}
                     >
-                        <Stack direction="row" spacing={1.5}>
-                            <CustomIconButton icon={<SearchOutlinedIcon />} />
-                            <CustomIconButton
-                                icon={<NotificationsNoneOutlinedIcon />}
-                            />
-                            <Avatar
-                                alt="User Avatar"
-                                src="/avatars/avatar1.png"
-                            />
-                        </Stack>
-                    </Paper>
+                        {/* Avatar Group */}
+                        <Paper
+                            sx={{
+                                px: 1,
+                                py: 1.5,
+                                borderRadius: 999,
+                            }}
+                            elevation={0}
+                        >
+                            <AvatarGroup max={4}>
+                                <Avatar
+                                    alt="User 1"
+                                    src="/avatars/avatar1.png"
+                                />
+                                <Avatar
+                                    alt="User 2"
+                                    src="/avatars/avatar2.png"
+                                />
+                                <Avatar
+                                    alt="User 3"
+                                    src="/avatars/avatar3.png"
+                                />
+                                <Avatar
+                                    alt="User 4"
+                                    src="/avatars/avatar4.png"
+                                />
+                                <Avatar
+                                    alt="User 5"
+                                    src="/avatars/avatar5.png"
+                                />
+                            </AvatarGroup>
+                        </Paper>
+
+                        {/* Search, Notifications, User Avatar */}
+                        <Paper
+                            sx={{ px: 1.25, py: 1.5, borderRadius: 999 }}
+                            elevation={0}
+                        >
+                            <Stack direction="row" spacing={1.5}>
+                                <CustomIconButton
+                                    icon={<SearchOutlinedIcon />}
+                                />
+                                <CustomIconButton
+                                    icon={<NotificationsNoneOutlinedIcon />}
+                                />
+                                <Avatar
+                                    alt="User Avatar"
+                                    src="/avatars/avatar1.png"
+                                />
+                            </Stack>
+                        </Paper>
+                    </Stack>
                 </Stack>
-            </Stack>
-            {children}
-        </Container>
+                {children}
+            </Container>
+        </NavigationBarProvider>
     );
+    ``;
 }

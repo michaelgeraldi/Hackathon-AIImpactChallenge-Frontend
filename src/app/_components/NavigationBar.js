@@ -3,6 +3,8 @@
 import * as React from "react";
 import { Box, Typography, Badge, Paper } from "@mui/material";
 
+// --- NavigationBar component ---
+
 const tabs = [
     { label: "Overview" },
     { label: "Tracker" },
@@ -11,18 +13,18 @@ const tabs = [
 ];
 
 export default function NavigationBar() {
-    const [active, setActive] = React.useState("Report");
+    const {active, setActive} = useNavigationBarContext();
 
     return (
         <Paper
-            sx={{
+        sx={{
                 display: "flex",
                 alignItems: "center",
                 borderRadius: "999px",
                 padding: "8px",
                 gap: 1,
                 px: 4,
-                py: 1
+                py: 1,
             }}
             elevation={0}
         >
@@ -74,5 +76,22 @@ export default function NavigationBar() {
                 );
             })}
         </Paper>
+    );
+}
+
+
+// --- Context for NavigationBar ---
+
+const NavigationBarContext = React.createContext();
+
+export const useNavigationBarContext = () => React.useContext(NavigationBarContext);
+
+export function NavigationBarProvider({children}) {
+    const [active, setActive] = React.useState("Report");
+
+    return (
+        <NavigationBarContext.Provider value={{ active, setActive }}>
+            {children}
+        </NavigationBarContext.Provider>
     );
 }
