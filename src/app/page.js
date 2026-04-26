@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Button, Typography, Container, Box } from "@mui/material";
-import CustomButton from "./reusables/CustomButton";
+import CustomButton from "./_components/CustomButton";
 
 export default function HomePage() {
     return (
@@ -13,9 +13,7 @@ export default function HomePage() {
                     marginTop: 8,
                 }}
             >
-                <Typography>
-                    <h1>Welcome to Keroyokin!</h1>
-                </Typography>
+                <Typography>Welcome to Keroyokin!</Typography>
             </Box>
         </Container>
     );

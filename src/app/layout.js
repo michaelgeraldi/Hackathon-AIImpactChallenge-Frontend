@@ -16,7 +16,6 @@ export default function RootLayout({ children }) {
         <html lang="en">
             <body className={poppins.className}>
                 <ThemeProvider theme={theme}>
-                    {/* Normalize CSS across browsers */}
                     <CssBaseline />
                     {children}
                 </ThemeProvider>

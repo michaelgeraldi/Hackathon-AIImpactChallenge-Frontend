@@ -38,6 +38,10 @@ export default function CustomButton({
                 fontWeight: 600,
                 px: 4,
                 py: 1,
+                transition: "all 0.2s ease",
+                "&:hover": {
+                    transform: "scale(1.1)",
+                },
                 ...sx, // allow overrides
             }}
             {...props}
