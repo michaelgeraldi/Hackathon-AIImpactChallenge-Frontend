@@ -1,4 +1,11 @@
-import { Container, Stack, AvatarGroup, Avatar, Paper } from "@mui/material";
+import {
+    Container,
+    Stack,
+    AvatarGroup,
+    Avatar,
+    Paper,
+    Box,
+} from "@mui/material";
 import Logo from "../_components/Logo";
 import CustomIconButton from "../_components/CustomIconButton";
 import NavigationBar from "../_components/NavigationBar";
@@ -91,9 +98,9 @@ export default function ClientLayout({ children }) {
                         </Paper>
                     </Stack>
                 </Stack>
-                {children}
+
+                <Box sx={{ flexGrow: 1 }}>{children}</Box>
             </Container>
         </NavigationBarProvider>
     );
-    ``;
 }

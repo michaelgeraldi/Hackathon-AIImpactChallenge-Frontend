@@ -20,6 +20,7 @@ import { useNavigationBarContext } from "../_components/NavigationBar";
 
 // Pages imports
 import ClientOverviewPage from "./_components/ClientOverviewPage";
+import ClientReportPage from "./_components/ClientReportPage";
 
 // Icon imports
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -34,7 +35,7 @@ export default function ClientPage() {
     } else if (active === "Tracker") {
         return <div>Tracker Page</div>;
     } else if (active === "Report") {
-        return <div>Report Page</div>;
+        return <ClientReportPage />;
     } else if (active === "Messages") {
         return <div>Messages Page</div>;
     }
