@@ -1,16 +1,30 @@
-'use client';
+"use client";
 
-import { createTheme } from '@mui/material/styles';
+import { createTheme } from "@mui/material/styles";
 
 const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#4352E5',
+    typography: {
+        fontFamily: '"Poppins", sans-serif',
     },
-    secondary: {
-      main: '#E7E9FC',
+    palette: {
+        primary: {
+            main: "#4352E5",
+        },
+        secondary: {
+            main: "#E7E9FC",
+        },
     },
-  },
+    components: {
+        MuiButton: {
+            styleOverrides: {
+                root: {
+                    borderRadius: 8,
+                    textTransform: "none",
+                    fontWeight: 600,
+                },
+            },
+        },
+    },
 });
 
 export default theme;

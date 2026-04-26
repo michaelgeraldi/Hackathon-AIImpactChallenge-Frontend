@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { Button, Typography, Container, Box } from "@mui/material";
+import CustomButton from "./reusables/CustomButton";
 
 export default function HomePage() {
     return (
@@ -12,27 +13,9 @@ export default function HomePage() {
                     marginTop: 8,
                 }}
             >
-                <Typography variant="h3" gutterBottom color="primary">
-                    Keroyokin Frontend
+                <Typography>
+                    <h1>Welcome to Keroyokin!</h1>
                 </Typography>
-
-                <Typography variant="body1" gutterBottom>
-                    This is a sample page using Material UI with a custom theme.
-                </Typography>
-
-                <Box mt={4}>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        sx={{ marginRight: 2 }}
-                    >
-                        Primary Button
-                    </Button>
-
-                    <Button variant="outlined" color="secondary">
-                        Secondary Button
-                    </Button>
-                </Box>
             </Box>
         </Container>
     );
