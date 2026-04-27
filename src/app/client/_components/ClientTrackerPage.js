@@ -11,14 +11,12 @@ import {
     Stack,
     Typography,
 } from "@mui/material";
-import { useState } from "react";
-import ActivitySection from "./ActivitySection";
-import { useActivitySection } from "./ActivitySection";
+import ActivitySection, { useActivitySection } from "./ActivitySection";
 
 // Icon imports
+import CustomCard from "@/app/_components/CustomCard";
 import AddIcon from "@mui/icons-material/Add";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import CustomCard from "@/app/_components/CustomCard";
 
 export default function ClientTrackerPage() {
     const activitySectionHook = useActivitySection();

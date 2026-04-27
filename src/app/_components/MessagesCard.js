@@ -1,21 +1,19 @@
+import Avatar from "@mui/material/Avatar";
+import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
-import SearchField from "./SearchField";
-import Avatar from "@mui/material/Avatar";
 import CustomIconButton from "./CustomIconButton";
+import SearchField from "./SearchField";
 
 // Icon imports
-import VideocamOutlinedIcon from "@mui/icons-material/VideocamOutlined";
-import CallOutlinedIcon from "@mui/icons-material/CallOutlined";
 import AttachFileOutlinedIcon from "@mui/icons-material/AttachFileOutlined";
-import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
+import CallOutlinedIcon from "@mui/icons-material/CallOutlined";
 import EmojiEmotionsOutlinedIcon from "@mui/icons-material/EmojiEmotionsOutlined";
+import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
 import SendIcon from "@mui/icons-material/Send";
+import VideocamOutlinedIcon from "@mui/icons-material/VideocamOutlined";
 import TextField from "@mui/material/TextField";
-import IconButton from "@mui/material/IconButton";
-import CustomButton from "./CustomButton";
 
 export default function MessagesCard() {
     return (

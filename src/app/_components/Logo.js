@@ -1,4 +1,4 @@
-import { Box, Typography, Paper } from "@mui/material";
+import { Paper, Typography } from "@mui/material";
 
 export default function Logo() {
     return (

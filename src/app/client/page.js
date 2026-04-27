@@ -1,21 +1,14 @@
 "use client";
 
-import * as React from "react";
 import {
-    Button,
-    Typography,
-    Container,
     Box,
-    Card,
     Collapse,
-    IconButton,
-    Stack,
     Grid,
+    IconButton,
+    Typography
 } from "@mui/material";
+import * as React from "react";
 import CustomCard from "../_components/CustomCard";
-import CustomButton from "../_components/CustomButton";
-import CustomBarChart from "../_components/CustomBarChart";
-import CustomDonutChart from "../_components/CustomDonutChart";
 import { useNavigationBarContext } from "../_components/NavigationBar";
 
 // Pages imports
@@ -24,8 +17,6 @@ import ClientReportPage from "./_components/ClientReportPage";
 
 // Icon imports
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import AddIcon from "@mui/icons-material/Add";
-import CustomChatCard from "../_components/CustomChatCard";
 import ClientMessagesPage from "./_components/ClientMessagesPage";
 import ClientTrackerPage from "./_components/ClientTrackerPage";
 

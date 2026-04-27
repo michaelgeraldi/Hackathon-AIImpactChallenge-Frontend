@@ -1,10 +1,8 @@
-import { Box, Grid, Typography, Stack, Avatar, Paper } from "@mui/material";
-import CustomCard from "../../_components/CustomCard";
-import CustomBarChart from "../../_components/CustomBarChart";
-import CustomDonutChart from "../../_components/CustomDonutChart";
-import CustomChatCard from "../../_components/CustomChatCard";
 import CustomButton from "@/app/_components/CustomButton";
 import CustomIconButton from "@/app/_components/CustomIconButton";
+import { Avatar, Box, Grid, Paper, Stack, Typography } from "@mui/material";
+import CustomCard from "../../_components/CustomCard";
+import CustomChatCard from "../../_components/CustomChatCard";
 
 // Icon imports
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -26,9 +24,9 @@ export default function ClientReportPage() {
                 </CustomCard>
 
                 <Grid container spacing={2.5} sx={{ mt: 2.5 }}>
-                    <Grid size={6}>
+                    <Grid size={6} sx={{ display: "flex", flexDirection: "column" }}>
                         {/* Rank Performance */}
-                        <CustomCard title="Rank Performance">
+                        <CustomCard sx={{ flex: 1 }} title="Rank Performance">
                             <Stack sx={{ gap: 2.5, mt: 2 }}>
                                 {[1, 2, 3].map((rank) => (
                                     <Stack

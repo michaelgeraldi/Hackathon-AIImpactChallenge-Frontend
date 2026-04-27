@@ -6,7 +6,7 @@ import {
     Grid,
     IconButton,
     Stack,
-    Typography
+    Typography,
 } from "@mui/material";
 import * as React from "react";
 import CustomBarChart from "../../_components/CustomBarChart";
@@ -76,7 +76,7 @@ export default function ClientOverviewPage() {
                     </CustomCard>
                 </Grid>
                 <Grid size={4.5}>
-                    <CustomCard>
+                    <CustomCard sx={{ height: "100%" }}>
                         <ActivitySection {...activitySectionHook} />
                     </CustomCard>
                 </Grid>

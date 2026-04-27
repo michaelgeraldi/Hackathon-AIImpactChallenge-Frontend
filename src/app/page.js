@@ -1,8 +1,6 @@
 "use client";
 
-import * as React from "react";
-import { Button, Typography, Container, Box } from "@mui/material";
-import CustomButton from "./_components/CustomButton";
+import { Box, Container, Typography } from "@mui/material";
 
 export default function HomePage() {
     return (
