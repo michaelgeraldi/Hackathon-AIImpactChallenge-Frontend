@@ -18,7 +18,7 @@ import KeyboardVoiceIcon from "@mui/icons-material/KeyboardVoice";
 export default function CustomChatCard() {
     return (
         <Card
-            elevation={0}
+            elevation={1}
             sx={{
                 borderRadius: 3,
                 height: "100%",

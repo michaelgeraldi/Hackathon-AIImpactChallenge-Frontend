@@ -21,7 +21,7 @@ export default function ClientLayout({ children }) {
             <Container
                 maxWidth="xl"
                 disableGutters
-                sx={{ px: 4, pt: 3, pb: 5, m: 0 }}
+                sx={{ px: 4, pt: 3, pb: 5 }}
             >
                 <Stack
                     sx={{
@@ -99,7 +99,7 @@ export default function ClientLayout({ children }) {
                     </Stack>
                 </Stack>
 
-                <Box sx={{ flexGrow: 1 }}>{children}</Box>
+                <Box>{children}</Box>
             </Container>
         </NavigationBarProvider>
     );

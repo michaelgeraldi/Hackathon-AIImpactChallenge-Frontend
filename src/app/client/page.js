@@ -26,6 +26,8 @@ import ClientReportPage from "./_components/ClientReportPage";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AddIcon from "@mui/icons-material/Add";
 import CustomChatCard from "../_components/CustomChatCard";
+import ClientMessagesPage from "./_components/ClientMessagesPage";
+import ClientTrackerPage from "./_components/ClientTrackerPage";
 
 export default function ClientPage() {
     const { active, setActive } = useNavigationBarContext();
@@ -33,11 +35,11 @@ export default function ClientPage() {
     if (active === "Overview") {
         return <ClientOverviewPage />;
     } else if (active === "Tracker") {
-        return <div>Tracker Page</div>;
+        return <ClientTrackerPage />;
     } else if (active === "Report") {
         return <ClientReportPage />;
     } else if (active === "Messages") {
-        return <div>Messages Page</div>;
+        return <ClientMessagesPage />;
     }
 }
 

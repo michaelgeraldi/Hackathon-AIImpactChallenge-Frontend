@@ -11,6 +11,8 @@ import CircularProgress from "@mui/material/CircularProgress";
  * - icon: React node (required)
  * - color: 'primary' | 'secondary' | 'default'
  * - size: 'small' | 'medium' | 'large'
+ * - iconSize: number (icon font size in pixels, e.g., 16, 20, 24)
+ * - bgColor: string (background color, e.g., 'grey.main', 'primary.main')
  * - onClick: function
  * - loading: boolean
  * - disabled: boolean
@@ -21,12 +23,21 @@ export default function CustomIconButton({
     icon,
     color = "violet",
     size = "medium",
+    iconSize,
+    bgColor = "grey.main",
     onClick,
     loading = false,
     disabled = false,
     sx = {},
     ...props
 }) {
+    // Clone the icon and apply fontSize if iconSize is provided
+    const iconWithSize = iconSize
+        ? React.cloneElement(icon, {
+              sx: { fontSize: iconSize, ...icon.props?.sx },
+          })
+        : icon;
+        
     return (
         <IconButton
             color={color}
@@ -36,15 +47,17 @@ export default function CustomIconButton({
             sx={{
                 borderRadius: 999,
                 transition: "all 0.2s ease",
+                backgroundColor: bgColor,
                 "&:hover": {
                     transform: "scale(1.1)",
+                    backgroundColor: bgColor,
+                    opacity: 0.8,
                 },
-                backgroundColor: "grey.main",
                 ...sx,
             }}
             {...props}
         >
-            {loading ? <CircularProgress size={20} /> : icon}
+            {loading ? <CircularProgress size={20} /> : iconWithSize}
         </IconButton>
     );
 }

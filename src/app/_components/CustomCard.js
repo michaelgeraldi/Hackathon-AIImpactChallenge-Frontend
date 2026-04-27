@@ -24,11 +24,11 @@ export default function CustomCard({
 }) {
     return (
         <Card
-            elevation={0}
+            elevation={1}
             sx={{
                 borderRadius: 3,
                 backgroundColor: "background.paper",
-                boxShadow: "0px 4px 20px rgba(0,0,0,0.05)",
+                // boxShadow: "0px 4px 20px rgba(0,0,0,0.05)",
                 ...sx,
             }}
             {...props}

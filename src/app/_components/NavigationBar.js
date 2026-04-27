@@ -13,11 +13,11 @@ const tabs = [
 ];
 
 export default function NavigationBar() {
-    const {active, setActive} = useNavigationBarContext();
+    const { active, setActive } = useNavigationBarContext();
 
     return (
         <Paper
-        sx={{
+            sx={{
                 display: "flex",
                 alignItems: "center",
                 borderRadius: "999px",
@@ -79,14 +79,14 @@ export default function NavigationBar() {
     );
 }
 
-
 // --- Context for NavigationBar ---
 
 const NavigationBarContext = React.createContext();
 
-export const useNavigationBarContext = () => React.useContext(NavigationBarContext);
+export const useNavigationBarContext = () =>
+    React.useContext(NavigationBarContext);
 
-export function NavigationBarProvider({children}) {
+export function NavigationBarProvider({ children }) {
     const [active, setActive] = React.useState("Report");
 
     return (
