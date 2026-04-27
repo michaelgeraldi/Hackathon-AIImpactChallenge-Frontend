@@ -1,28 +1,28 @@
 "use client";
 
-import * as React from "react";
 import {
-    Button,
-    Typography,
-    Container,
     Box,
-    Card,
     Collapse,
+    Grid,
     IconButton,
     Stack,
-    Grid,
+    Typography
 } from "@mui/material";
-import CustomCard from "../../_components/CustomCard";
-import CustomButton from "../../_components/CustomButton";
+import * as React from "react";
 import CustomBarChart from "../../_components/CustomBarChart";
-import CustomDonutChart from "../../_components/CustomDonutChart";
+import CustomButton from "../../_components/CustomButton";
+import CustomCard from "../../_components/CustomCard";
 import CustomChatCard from "../../_components/CustomChatCard";
+import CustomDonutChart from "../../_components/CustomDonutChart";
 
 // Icon imports
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AddIcon from "@mui/icons-material/Add";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ActivitySection, { useActivitySection } from "./ActivitySection";
 
 export default function ClientOverviewPage() {
+    const activitySectionHook = useActivitySection();
+
     return (
         <Box>
             <CollapsibleTitle
@@ -76,7 +76,9 @@ export default function ClientOverviewPage() {
                     </CustomCard>
                 </Grid>
                 <Grid size={4.5}>
-                    <CustomCard title="Activity" sx={{ height: "100%" }} />
+                    <CustomCard>
+                        <ActivitySection {...activitySectionHook} />
+                    </CustomCard>
                 </Grid>
                 <Grid size={4.5}>
                     <CustomChatCard />
