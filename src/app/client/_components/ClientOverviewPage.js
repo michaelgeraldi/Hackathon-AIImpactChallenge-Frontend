@@ -14,11 +14,14 @@ import CustomButton from "../../_components/CustomButton";
 import CustomCard from "../../_components/CustomCard";
 import CustomChatCard from "../../_components/CustomChatCard";
 import CustomDonutChart from "../../_components/CustomDonutChart";
+import CollapsibleTitle from "../../_components/CollapsibleTitle";
 
 // Icon imports
 import AddIcon from "@mui/icons-material/Add";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ActivitySection, { useActivitySection } from "./ActivitySection";
+import ActivitySection, {
+    useActivitySection,
+} from "../../_components/ActivitySection";
 
 export default function ClientOverviewPage() {
     const activitySectionHook = useActivitySection();
@@ -84,69 +87,6 @@ export default function ClientOverviewPage() {
                     <CustomChatCard />
                 </Grid>
             </Grid>
-        </Box>
-    );
-}
-
-function CollapsibleTitle({
-    title,
-    subtitle,
-    children,
-    defaultExpanded = false,
-}) {
-    const [expanded, setExpanded] = React.useState(defaultExpanded);
-
-    return (
-        <Box>
-            {/* Header */}
-            <Box
-                onClick={() => setExpanded(!expanded)}
-                sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "start",
-                    cursor: "pointer",
-                }}
-            >
-                {/* Title */}
-                <Typography
-                    sx={{
-                        fontWeight: 600,
-                        fontSize: 36,
-                    }}
-                >
-                    {title}
-                </Typography>
-
-                {/* Chevron */}
-                <IconButton
-                    size="small"
-                    sx={{
-                        transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
-                        transition: "transform 0.25s ease",
-                    }}
-                >
-                    <ExpandMoreIcon />
-                </IconButton>
-            </Box>
-
-            <Box>
-                {subtitle && (
-                    <Typography
-                        sx={{
-                            fontWeight: 300,
-                            fontSize: 20,
-                        }}
-                    >
-                        {subtitle}
-                    </Typography>
-                )}
-            </Box>
-
-            {/* Collapsible Content */}
-            <Collapse in={expanded} sx={{ mt: 2 }}>
-                <Box sx={{ pt: 0 }}>{children}</Box>
-            </Collapse>
         </Box>
     );
 }

@@ -19,15 +19,21 @@ export default function MessagesCard() {
     return (
         <Paper
             elevation={0}
-            sx={{ py: 5, px: 5.5, borderRadius: 5, height: "100%" }}
+            sx={{
+                py: 5,
+                px: 5.5,
+                borderRadius: 5,
+                height: "100%",
+                display: "flex",
+            }}
         >
             <Stack
                 direction="row"
                 sx={{
-                    alignItems: "flex-start",
+                    alignItems: "stretch",
                     justifyContent: "space-between",
                     gap: 6,
-                    height: "100%",
+                    flex: 1,
                 }}
             >
                 {/* Sidebar */}
@@ -42,7 +48,7 @@ export default function MessagesCard() {
                     </Box>
 
                     {/* Messages List */}
-                    <Stack sx={{ gap: 1.75 }}>
+                    <Stack sx={{ gap: 1.75, flex: 1 }}>
                         <MessageListItem />
                         <MessageListItem />
                         <MessageListItem />
@@ -54,11 +60,11 @@ export default function MessagesCard() {
                 <Stack
                     direction="column"
                     sx={{
-                        alignItems: "stretch",
                         justifyContent: "space-between",
                         gap: 5,
-                        width: "100%",
+                        flex: 1,
                         height: "100%",
+                        minHeight: 0,
                     }}
                 >
                     {/* Chat Header */}
@@ -116,7 +122,6 @@ export default function MessagesCard() {
                         <MessageBubble />
                         <MessageBubble />
                         <MessageBubble />
- 
                     </Stack>
 
                     {/* Chat Input */}

@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Stack, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import ActivitySection, {
     useActivitySection,
 } from "../../_components/ActivitySection";
@@ -9,7 +9,7 @@ import ActivitySection, {
 import CustomCard from "@/app/_components/CustomCard";
 import KanbanBoard from "@/app/_components/KanbanBoard";
 
-export default function ClientTrackerPage() {
+export default function WorkerTrackerPage() {
     const activitySectionHook = useActivitySection();
 
     const kanbanColumns = [
