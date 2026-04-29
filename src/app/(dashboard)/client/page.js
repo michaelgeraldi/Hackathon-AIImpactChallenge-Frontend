@@ -1,15 +1,10 @@
 "use client";
 
-import {
-    Box,
-    Collapse,
-    Grid,
-    IconButton,
-    Typography
-} from "@mui/material";
+import { Box, Collapse, Grid, IconButton, Typography } from "@mui/material";
 import * as React from "react";
-import CustomCard from "../_components/CustomCard";
-import { useNavigationBarContext } from "../_components/NavigationBar";
+import CustomCard from "../../_components/CustomCard";
+import { useNavigationBarContext } from "../../_components/NavigationBar";
+import useSWR from "swr";
 
 // Pages imports
 import ClientOverviewPage from "./_components/ClientOverviewPage";
@@ -22,6 +17,12 @@ import ClientTrackerPage from "./_components/ClientTrackerPage";
 
 export default function ClientPage() {
     const { active, setActive } = useNavigationBarContext();
+
+    const { data, error, isLoading } = useSWR("/pm/health");
+
+    React.useEffect(() => {
+        console.debug("Health Check: ", { data, error, isLoading });
+    }, [data, error, isLoading]);
 
     if (active === "Overview") {
         return <ClientOverviewPage />;

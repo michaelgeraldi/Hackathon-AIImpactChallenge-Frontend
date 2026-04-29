@@ -10,15 +10,15 @@ import {
     CircularProgress,
 } from "@mui/material";
 import * as React from "react";
-import CustomBarChart from "../../_components/CustomBarChart";
-import CustomButton from "../../_components/CustomButton";
-import CustomCard from "../../_components/CustomCard";
-import CustomChatCard from "../../_components/CustomChatCard";
-import CustomDonutChart from "../../_components/CustomDonutChart";
-import CollapsibleTitle from "../../_components/CollapsibleTitle";
+import CustomBarChart from "../../../_components/CustomBarChart";
+import CustomButton from "../../../_components/CustomButton";
+import CustomCard from "../../../_components/CustomCard";
+import CustomChatCard from "../../../_components/CustomChatCard";
+import CustomDonutChart from "../../../_components/CustomDonutChart";
+import CollapsibleTitle from "../../../_components/CollapsibleTitle";
 import ActivitySection, {
     useActivitySection,
-} from "../../_components/ActivitySection";
+} from "../../../_components/ActivitySection";
 
 // Icon imports
 import AddIcon from "@mui/icons-material/Add";
@@ -64,7 +64,7 @@ export default function WorkerOverviewPage() {
                     <CustomCard title="Tasks List" sx={{ mt: 2.5 }}>
                         <Stack sx={{ mt: 1.5, gap: 2 }}>
                             {DEFAULT_TASKS.map((task) => (
-                                <TaskListItem 
+                                <TaskListItem
                                     key={task.id}
                                     title={task.title}
                                     progress={task.progress}

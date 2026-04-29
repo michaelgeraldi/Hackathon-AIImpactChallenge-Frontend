@@ -3,11 +3,17 @@
 import { Box, Grid, Link, Stack, TextField, Typography } from "@mui/material";
 import CustomButton from "./_components/CustomButton";
 import CustomTextField from "./_components/CustomTextField";
+import { useRouter } from "next/navigation";
 
 export default function HomePage() {
+    const router = useRouter();
+
+    const handleLogin = () => {
+        router.push("/client");
+    };
+
     return (
         <Stack
-            maxWidth="lg"
             sx={{
                 flex: 1,
                 justifyContent: "center",
@@ -22,7 +28,7 @@ export default function HomePage() {
                 sx={{
                     alignItems: "stretch",
                     width: "100%",
-                    height: "100%"
+                    height: "100%",
                 }}
             >
                 {/* Left Side - Form */}
@@ -127,7 +133,20 @@ export default function HomePage() {
                     </Box>
 
                     {/* Log In Button */}
-                    <CustomButton fullWidth>Log In</CustomButton>
+                    <CustomButton
+                        sx={{ mb: 2 }}
+                        fullWidth
+                        onClick={() => handleLogin("/client")}
+                    >
+                        Log In as Client
+                    </CustomButton>
+                    <CustomButton
+                        sx={{ mb: 2 }}
+                        fullWidth
+                        onClick={() => router.push("/talent")}
+                    >
+                        Log In as Talent
+                    </CustomButton>
                 </Grid>
 
                 {/* Right Side - Image Placeholder */}
@@ -138,8 +157,7 @@ export default function HomePage() {
                         borderBottomRightRadius: 40,
                         backgroundColor: "primary.main",
                     }}
-                >
-                </Grid>
+                ></Grid>
             </Grid>
         </Stack>
     );

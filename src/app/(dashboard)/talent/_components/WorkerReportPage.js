@@ -1,5 +1,5 @@
 import { Box, Stack, Typography, Grid } from "@mui/material";
-import CustomCard from "../../_components/CustomCard";
+import CustomCard from "../../../_components/CustomCard";
 
 // Icon imports
 import DesignServicesOutlinedIcon from "@mui/icons-material/DesignServicesOutlined";
@@ -7,7 +7,7 @@ import DesignServicesOutlinedIcon from "@mui/icons-material/DesignServicesOutlin
 export default function WorkerReportPage() {
     return (
         <Grid container spacing={5.5}>
-            <Grid size={4}>
+            <Grid item size={4}>
                 <Box>
                     <CustomCard
                         title="Task Completetion"
@@ -32,13 +32,13 @@ export default function WorkerReportPage() {
                     </CustomCard>
                 </Box>
             </Grid>
-            <Grid size={4}>
+            <Grid item size={4}>
                 <CustomCard
                     title="Feedback from AI"
                     sx={{ height: "100%" }}
                 ></CustomCard>
             </Grid>
-            <Grid size={4}>
+            <Grid item size={4}>
                 <CustomCard
                     title="Feedback from Project Owner"
                     sx={{ height: "100%" }}

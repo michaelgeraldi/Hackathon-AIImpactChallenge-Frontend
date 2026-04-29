@@ -23,7 +23,7 @@ export default function MessagesCard() {
                 py: 5,
                 px: 5.5,
                 borderRadius: 5,
-                height: "100%",
+                height: "80vh",
                 display: "flex",
             }}
         >
@@ -48,11 +48,17 @@ export default function MessagesCard() {
                     </Box>
 
                     {/* Messages List */}
-                    <Stack sx={{ gap: 1.75, flex: 1 }}>
-                        <MessageListItem />
-                        <MessageListItem />
-                        <MessageListItem />
-                        <MessageListItem />
+                    <Stack
+                        sx={{
+                            maxHeight: "100%",
+                            overflowY: "scroll",
+                            gap: 1.75,
+                            flex: 1,
+                        }}
+                    >
+                        {[0, 1, 2, 3, 4, 5, 6].map((item, index) => (
+                            <MessageListItem key={index} />
+                        ))}
                     </Stack>
                 </Stack>
 
@@ -110,19 +116,22 @@ export default function MessagesCard() {
                     </Stack>
 
                     {/* Chat Content */}
-                    <Stack
-                        sx={{
-                            flex: 1,
-                            height: "100%",
-                            gap: 3,
-                            overflow: "auto",
-                            overflowX: "hidden",
-                        }}
-                    >
-                        <MessageBubble />
-                        <MessageBubble />
-                        <MessageBubble />
-                    </Stack>
+                    <Box sx={{ flex: 1, minHeight: 0 }}>
+                        <Stack
+                            sx={{
+                                gap: 3,
+                                maxHeight: "100%",
+                                overflowY: "scroll",
+                            }}
+                        >
+                            {[0, 1, 2, 3, 4, 5, 6].map((item, index) => (
+                                <MessageBubble
+                                    isSentByUser={index % 2 === 0}
+                                    key={index}
+                                />
+                            ))}
+                        </Stack>
+                    </Box>
 
                     {/* Chat Input */}
                     <Stack
@@ -209,13 +218,15 @@ export default function MessagesCard() {
     );
 }
 
-function MessageListItem() {
+function MessageListItem({ active }) {
     return (
         <Stack
             direction="row"
             sx={{
                 borderRadius: 5,
-                backgroundColor: "secondary.main",
+                backgroundColor: active
+                    ? "secondary.main"
+                    : "background.default",
                 py: 2.5,
                 px: 3,
                 gap: 3,
@@ -260,7 +271,9 @@ function MessageBubble({ message, isSentByUser }) {
     return (
         <Box
             sx={{
-                backgroundColor: "background.default",
+                backgroundColor: isSentByUser
+                    ? "background.default"
+                    : "secondary.main",
                 px: 3,
                 py: 2,
                 borderRadius: 2,

@@ -2,26 +2,22 @@
 
 import {
     Box,
-    Collapse,
     Grid,
-    IconButton,
     Stack,
-    Typography,
+    Typography
 } from "@mui/material";
-import * as React from "react";
-import CustomBarChart from "../../_components/CustomBarChart";
-import CustomButton from "../../_components/CustomButton";
-import CustomCard from "../../_components/CustomCard";
-import CustomChatCard from "../../_components/CustomChatCard";
-import CustomDonutChart from "../../_components/CustomDonutChart";
-import CollapsibleTitle from "../../_components/CollapsibleTitle";
+import CollapsibleTitle from "../../../_components/CollapsibleTitle";
+import CustomBarChart from "../../../_components/CustomBarChart";
+import CustomButton from "../../../_components/CustomButton";
+import CustomCard from "../../../_components/CustomCard";
+import CustomChatCard from "../../../_components/CustomChatCard";
+import CustomDonutChart from "../../../_components/CustomDonutChart";
 
 // Icon imports
 import AddIcon from "@mui/icons-material/Add";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ActivitySection, {
     useActivitySection,
-} from "../../_components/ActivitySection";
+} from "../../../_components/ActivitySection";
 
 export default function ClientOverviewPage() {
     const activitySectionHook = useActivitySection();

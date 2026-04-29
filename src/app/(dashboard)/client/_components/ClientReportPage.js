@@ -1,8 +1,8 @@
 import CustomButton from "@/app/_components/CustomButton";
 import CustomIconButton from "@/app/_components/CustomIconButton";
 import { Avatar, Box, Grid, Paper, Stack, Typography } from "@mui/material";
-import CustomCard from "../../_components/CustomCard";
-import CustomChatCard from "../../_components/CustomChatCard";
+import CustomCard from "../../../_components/CustomCard";
+import CustomChatCard from "../../../_components/CustomChatCard";
 
 // Icon imports
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -24,7 +24,10 @@ export default function ClientReportPage() {
                 </CustomCard>
 
                 <Grid container spacing={2.5} sx={{ mt: 2.5 }}>
-                    <Grid size={6} sx={{ display: "flex", flexDirection: "column" }}>
+                    <Grid
+                        size={6}
+                        sx={{ display: "flex", flexDirection: "column" }}
+                    >
                         {/* Rank Performance */}
                         <CustomCard sx={{ flex: 1 }} title="Rank Performance">
                             <Stack sx={{ gap: 2.5, mt: 2 }}>
@@ -141,7 +144,7 @@ export default function ClientReportPage() {
                                     </Typography>
                                     <Avatar
                                         alt="User 1"
-                                        src="/avatars/avatar1.png"
+                                        src="https://api.dicebear.com/7.x/avataaars/svg?backgroundColor=ffffff&seed=abdul"
                                         sx={{ mt: 1 }}
                                     />
                                 </Box>
@@ -153,7 +156,7 @@ export default function ClientReportPage() {
                                     </Typography>
                                     <Avatar
                                         alt="User 1"
-                                        src="/avatars/avatar1.png"
+                                        src="https://api.dicebear.com/7.x/avataaars/svg?backgroundColor=ffffff&seed=abdul"
                                         sx={{ mt: 1 }}
                                     />
                                 </Box>
@@ -162,7 +165,7 @@ export default function ClientReportPage() {
                     </Grid>
                     <Grid size={6}>
                         <CustomCard
-                            title="Tozo (AI Agent) Live Feed"
+                            title="Kira (AI Agent) Live Feed"
                             subtitle="What our agent has been doing for you"
                         >
                             <Stack sx={{ mt: 3, gap: 5 }}>

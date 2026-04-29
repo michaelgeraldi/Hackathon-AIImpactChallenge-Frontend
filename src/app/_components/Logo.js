@@ -15,7 +15,7 @@ export default function Logo() {
             <Typography
                 sx={{ fontSize: 24, fontWeight: 600, color: "tertiary.main" }}
             >
-                Keroyokin.id
+                KIRJAU
             </Typography>
         </Paper>
     );
