@@ -10,14 +10,13 @@ export default function HomePage() {
     const [isCreatingProject, setCreatingProject] = React.useState(false);
 
     return (
-        <Box sx={{ height: "100%", width: "100%" }}>
+        <Box sx={{ display: "flex", height: "100%", width: "100%" }}>
             <Stack
                 direction="column"
                 sx={{
                     alignItems: "center",
                     justifyContent: "center",
-                    height: "100%",
-                    width: "100%",
+                    flex: 1,
                 }}
             >
                 <CustomButton
@@ -29,7 +28,11 @@ export default function HomePage() {
             </Stack>
 
             <Modal
-                sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+                sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                }}
                 open={isCreatingProject}
                 onClose={() => setCreatingProject(false)}
             >

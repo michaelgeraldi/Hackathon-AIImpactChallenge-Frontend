@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Grid, Link, Stack, TextField, Typography } from "@mui/material";
+import { Box, Grid, Link, Stack, Typography, Container } from "@mui/material";
 import CustomButton from "./_components/CustomButton";
 import CustomTextField from "./_components/CustomTextField";
 import { useRouter } from "next/navigation";
@@ -13,22 +13,20 @@ export default function LoginPage() {
     };
 
     return (
-        <Stack
+        <Container
+            maxWidth="md"
             sx={{
-                flex: 1,
+                display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                mx: "auto",
-                minWidth: "50%",
-                height: "100%",
+                height: "100vh"
             }}
         >
             <Grid
                 container
                 sx={{
                     alignItems: "stretch",
-                    width: "100%",
-                    height: "100%",
+                    width: "100%"
                 }}
             >
                 {/* Left Side - Form */}
@@ -60,7 +58,7 @@ export default function LoginPage() {
                             mb: 4,
                         }}
                     >
-                        Welcome Back!
+                        Let&apos;s get you logged in!
                     </Typography>
 
                     {/* Email Field */}
@@ -159,6 +157,6 @@ export default function LoginPage() {
                     }}
                 ></Grid>
             </Grid>
-        </Stack>
+        </Container>
     );
 }

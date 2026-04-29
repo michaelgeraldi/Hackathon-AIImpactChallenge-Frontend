@@ -1,6 +1,6 @@
 // hooks/useApiMutation.js
 import useSWRMutation from "swr/mutation";
-import { mutationFetcher } from "../lib/apiClient";
+import { mutationFetcher } from "../lib/api";
 
 export default function useMutation(url, options = {}) {
     const { trigger, data, error, isMutating } = useSWRMutation(
@@ -10,12 +10,6 @@ export default function useMutation(url, options = {}) {
     );
 
     const post = (body, extra = {}) => {
-        console.log(
-            "Triggering POST mutation with body:",
-            body,
-            "and extra options:",
-            extra,
-        );
         trigger({ method: "POST", body, ...extra });
     };
 
