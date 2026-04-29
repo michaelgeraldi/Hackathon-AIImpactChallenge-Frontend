@@ -5,11 +5,11 @@ import CustomButton from "./_components/CustomButton";
 import CustomTextField from "./_components/CustomTextField";
 import { useRouter } from "next/navigation";
 
-export default function HomePage() {
+export default function LoginPage() {
     const router = useRouter();
 
     const handleLogin = () => {
-        router.push("/client");
+        router.push("/home");
     };
 
     return (
@@ -136,14 +136,14 @@ export default function HomePage() {
                     <CustomButton
                         sx={{ mb: 2 }}
                         fullWidth
-                        onClick={() => handleLogin("/client")}
+                        onClick={() => router.push("/home?role=client")}
                     >
                         Log In as Client
                     </CustomButton>
                     <CustomButton
                         sx={{ mb: 2 }}
                         fullWidth
-                        onClick={() => router.push("/talent")}
+                        onClick={() => router.push("/home?role=talent")}
                     >
                         Log In as Talent
                     </CustomButton>

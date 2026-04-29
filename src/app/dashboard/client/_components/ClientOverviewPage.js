@@ -1,11 +1,7 @@
 "use client";
 
-import {
-    Box,
-    Grid,
-    Stack,
-    Typography
-} from "@mui/material";
+import React from "react";
+import { Box, Grid, Modal, Stack, Typography } from "@mui/material";
 import CollapsibleTitle from "../../../_components/CollapsibleTitle";
 import CustomBarChart from "../../../_components/CustomBarChart";
 import CustomButton from "../../../_components/CustomButton";
@@ -18,8 +14,10 @@ import AddIcon from "@mui/icons-material/Add";
 import ActivitySection, {
     useActivitySection,
 } from "../../../_components/ActivitySection";
+import ProjectForm from "./ProjectForm";
 
 export default function ClientOverviewPage() {
+    const [isCreatingProject, setCreatingProject] = React.useState(false);
     const activitySectionHook = useActivitySection();
 
     return (
@@ -53,9 +51,13 @@ export default function ClientOverviewPage() {
                     }}
                 >
                     <CustomButton startIcon={<AddIcon />} fullWidth>
-                        Add New Worker
+                        Add New Talent
                     </CustomButton>
-                    <CustomButton startIcon={<AddIcon />} fullWidth>
+                    <CustomButton
+                        startIcon={<AddIcon />}
+                        fullWidth
+                        onClick={() => setCreatingProject(true)}
+                    >
                         Add New Task
                     </CustomButton>
                 </Stack>
@@ -83,6 +85,13 @@ export default function ClientOverviewPage() {
                     <CustomChatCard />
                 </Grid>
             </Grid>
+
+            <Modal
+                open={isCreatingProject}
+                onClose={() => setCreatingProject(false)}
+            >
+                <ProjectForm />
+            </Modal>
         </Box>
     );
 }

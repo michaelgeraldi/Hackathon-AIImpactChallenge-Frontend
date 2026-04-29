@@ -5,6 +5,7 @@ import { ThemeProvider, CssBaseline, Box } from "@mui/material";
 import theme from "../theme/theme";
 import { Poppins } from "next/font/google";
 import { SWRConfig } from "swr";
+import { FeedbackProvider } from "./_providers/FeedbackProvider";
 
 const poppins = Poppins({
     subsets: ["latin"],
@@ -14,7 +15,8 @@ const poppins = Poppins({
 
 export default function RootLayout({ children }) {
     const fetcher = (url) => {
-        const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+        const baseURL =
+            process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
         const fullUrl = url.startsWith("http") ? url : `${baseURL}${url}`;
 
         return fetch(fullUrl).then((res) => {
@@ -37,16 +39,18 @@ export default function RootLayout({ children }) {
                     }}
                 >
                     <ThemeProvider theme={theme}>
-                        <CssBaseline />
-                        <Box
-                            sx={{
-                                minHeight: "100vh",
-                                display: "flex",
-                                flexDirection: "column",
-                            }}
-                        >
-                            {children}
-                        </Box>
+                        <FeedbackProvider>
+                            <CssBaseline />
+                            <Box
+                                sx={{
+                                    minHeight: "100vh",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                }}
+                            >
+                                {children}
+                            </Box>
+                        </FeedbackProvider>
                     </ThemeProvider>
                 </SWRConfig>
             </body>
