@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography, Grid } from "@mui/material";
 import CustomCard from "../../_components/CustomCard";
 
 // Icon imports
@@ -6,44 +6,45 @@ import DesignServicesOutlinedIcon from "@mui/icons-material/DesignServicesOutlin
 
 export default function WorkerReportPage() {
     return (
-        <Stack
-            direction="row"
-            sx={{
-                alignItems: "stretch",
-                justifyContent: "space-between",
-                width: "100%",
-                gap: 5.5,
-            }}
-        >
-            <Box>
+        <Grid container spacing={5.5}>
+            <Grid item size={4}>
+                <Box>
+                    <CustomCard
+                        title="Task Completetion"
+                        sx={{ flex: 1 }}
+                    ></CustomCard>
+                    <CustomCard
+                        title="Training Recommendations"
+                        sx={{ flex: 1, mt: 5.5 }}
+                    >
+                        <Stack sx={{ gap: 2.5, mt: 2 }}>
+                            <TrainingItem
+                                icon={<DesignServicesOutlinedIcon />}
+                                title="Inclusive Design Standards"
+                                description="This module teaches designers how to achieve maximum scores in accessibility audits"
+                            />
+                            <TrainingItem
+                                icon={<DesignServicesOutlinedIcon />}
+                                title="Inclusive Design Standards"
+                                description="This module teaches designers how to achieve maximum scores in accessibility audits"
+                            />
+                        </Stack>
+                    </CustomCard>
+                </Box>
+            </Grid>
+            <Grid item size={4}>
                 <CustomCard
-                    title="Task Completetion"
-                    sx={{ flex: 1 }}
+                    title="Feedback from AI"
+                    sx={{ height: "100%" }}
                 ></CustomCard>
+            </Grid>
+            <Grid item size={4}>
                 <CustomCard
-                    title="Training Recommendations"
-                    sx={{ flex: 1, mt: 5.5 }}
-                >
-                    <Stack sx={{ gap: 2.5, mt: 2 }}>
-                        <TrainingItem
-                            icon={<DesignServicesOutlinedIcon />}
-                            title="Inclusive Design Standards"
-                            description="This module teaches designers how to achieve maximum scores in accessibility audits"
-                        />
-                        <TrainingItem
-                            icon={<DesignServicesOutlinedIcon />}
-                            title="Inclusive Design Standards"
-                            description="This module teaches designers how to achieve maximum scores in accessibility audits"
-                        />
-                    </Stack>
-                </CustomCard>
-            </Box>
-            <CustomCard title="Feedback from AI" sx={{ flex: 1 }}></CustomCard>
-            <CustomCard
-                title="Feedback from Project Owner"
-                sx={{ flex: 1 }}
-            ></CustomCard>
-        </Stack>
+                    title="Feedback from Project Owner"
+                    sx={{ height: "100%" }}
+                ></CustomCard>
+            </Grid>
+        </Grid>
     );
 }
 
@@ -58,7 +59,14 @@ function TrainingItem({ icon, title, description }) {
                 alignItems: "flex-start",
             }}
         >
-            <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'flex-start', gap: 0.75 }}>
+            <Stack
+                direction="row"
+                sx={{
+                    alignItems: "center",
+                    justifyContent: "flex-start",
+                    gap: 0.75,
+                }}
+            >
                 <Box
                     sx={{
                         fontSize: 32,
