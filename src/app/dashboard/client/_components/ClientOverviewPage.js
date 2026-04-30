@@ -14,7 +14,7 @@ import AddIcon from "@mui/icons-material/Add";
 import ActivitySection, {
     useActivitySection,
 } from "../../../_components/ActivitySection";
-import ProjectForm from "./ProjectForm";
+import ProjectForm from "../../../home/client/_components/ProjectForm";
 
 export default function ClientOverviewPage() {
     const [isCreatingProject, setCreatingProject] = React.useState(false);

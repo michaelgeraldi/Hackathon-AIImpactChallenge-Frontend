@@ -4,7 +4,7 @@ import CustomButton from "@/app/_components/CustomButton";
 import AddIcon from "@mui/icons-material/Add";
 import { Box, Modal, Stack, Typography, Container, Paper } from "@mui/material";
 import React from "react";
-import ProjectForm from "../../../dashboard/client/_components/ProjectForm";
+import ProjectForm from "./ProjectForm";
 import ProjectCard from "./ProjectCard";
 
 export default function ClientProjectsPage() {
@@ -121,7 +121,7 @@ export default function ClientProjectsPage() {
                         Create new project
                     </CustomButton>
                 </Stack>
-                
+
                 {/* Projects List */}
                 <Stack sx={{ gap: 2 }}>
                     {projects.map((project) => (
