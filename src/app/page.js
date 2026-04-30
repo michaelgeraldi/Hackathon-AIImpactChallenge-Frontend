@@ -1,15 +1,27 @@
 "use client";
 
+import React from "react";
 import { Box, Grid, Link, Stack, Typography, Container } from "@mui/material";
 import CustomButton from "./_components/CustomButton";
 import CustomTextField from "./_components/CustomTextField";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
+    const [email, setEmail] = React.useState("");
+    const [password, setPassword] = React.useState("");
+    const [error, setError] = React.useState(null);
     const router = useRouter();
 
-    const handleLogin = () => {
-        router.push("/home");
+    const handleLogin = (userType) => {
+        if (email === "user1@email.com" && password === "kirjau123") {
+            setError(null);
+            router.push(`/home/${userType}`);
+            localStorage.setItem("token", crypto.randomUUID());
+            return;
+        }
+
+        setError("Incorrect email or password. Please try again.");
+
     };
 
     return (
@@ -19,14 +31,14 @@ export default function LoginPage() {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                height: "100vh"
+                height: "100vh",
             }}
         >
             <Grid
                 container
                 sx={{
                     alignItems: "stretch",
-                    width: "100%"
+                    width: "100%",
                 }}
             >
                 {/* Left Side - Form */}
@@ -72,7 +84,11 @@ export default function LoginPage() {
                         >
                             Email:
                         </Typography>
-                        <CustomTextField placeholder="Enter your email" />
+                        <CustomTextField
+                            placeholder="Enter your email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
                     </Stack>
 
                     {/* Password Field */}
@@ -89,11 +105,13 @@ export default function LoginPage() {
                         <CustomTextField
                             placeholder="Enter your password"
                             type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                         />
                     </Stack>
 
                     {/* Forgot Password Link */}
-                    <Box sx={{ textAlign: "right", mb: 4 }}>
+                    <Box sx={{ textAlign: "right", mb: 4, display: "none" }}>
                         <Link
                             href="#"
                             sx={{
@@ -111,7 +129,7 @@ export default function LoginPage() {
                     </Box>
 
                     {/* Sign Up Link */}
-                    <Box sx={{ mb: 3, textAlign: "center" }}>
+                    <Box sx={{ mb: 3, textAlign: "center", display: "none" }}>
                         <Typography sx={{ fontSize: 14 }}>
                             Does not have an account?{" "}
                             <Link
@@ -130,21 +148,25 @@ export default function LoginPage() {
                         </Typography>
                     </Box>
 
+                    {error && <Typography color="error">{error}</Typography>}
+
                     {/* Log In Button */}
-                    <CustomButton
-                        sx={{ mb: 2 }}
-                        fullWidth
-                        onClick={() => router.push("/home/client")}
-                    >
-                        Log In as Client
-                    </CustomButton>
-                    <CustomButton
-                        sx={{ mb: 2 }}
-                        fullWidth
-                        onClick={() => router.push("/home/talent")}
-                    >
-                        Log In as Talent
-                    </CustomButton>
+                    <Box sx={{ mt: 6 }}>
+                        <CustomButton
+                            sx={{ mb: 2 }}
+                            fullWidth
+                            onClick={() => handleLogin("client")}
+                        >
+                            Log In as Client
+                        </CustomButton>
+                        <CustomButton
+                            sx={{ mb: 2 }}
+                            fullWidth
+                            onClick={() => handleLogin("talent")}
+                        >
+                            Log In as Talent
+                        </CustomButton>
+                    </Box>
                 </Grid>
 
                 {/* Right Side - Image Placeholder */}
