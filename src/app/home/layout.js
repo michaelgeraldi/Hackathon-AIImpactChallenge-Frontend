@@ -11,7 +11,7 @@ import {
     MenuList,
     MenuItem,
 } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Logo from "../_components/Logo";
 import CustomIconButton from "../_components/CustomIconButton";
@@ -44,6 +44,13 @@ export default function HomepageLayout({ children }) {
     };
 
     const open = Boolean(anchorEl);
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            router.push("/")
+        }
+    }, [router]);
 
     return (
         <NavigationBarProvider defaultActive="Homepage">

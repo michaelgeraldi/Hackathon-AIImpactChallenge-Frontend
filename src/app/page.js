@@ -21,7 +21,6 @@ export default function LoginPage() {
         }
 
         setError("Incorrect email or password. Please try again.");
-
     };
 
     return (

@@ -45,6 +45,13 @@ export default function DashboardLayout({ children }) {
 
     const open = Boolean(anchorEl);
 
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            router.push("/");
+        }
+    }, [router]);
+
     return (
         <NavigationBarProvider>
             <Container
