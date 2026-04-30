@@ -115,7 +115,7 @@ export default function LoginPage() {
                         <Typography sx={{ fontSize: 14 }}>
                             Does not have an account?{" "}
                             <Link
-                                href="#"
+                                href={"/register"}
                                 sx={{
                                     fontWeight: 600,
                                     color: "inherit",

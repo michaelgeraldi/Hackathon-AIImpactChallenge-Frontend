@@ -9,6 +9,7 @@ import ClientProjectCard from "./ClientProjectCard";
 import useSWR from "swr";
 
 export default function ClientProjectsPage() {
+    const { data, error } = useSWR("/pm/projects/context");
     const [isCreatingProject, setCreatingProject] = React.useState(false);
     const [selectedProjectId, setSelectedProjectId] = React.useState(null);
 
