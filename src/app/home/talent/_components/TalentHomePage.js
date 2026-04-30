@@ -7,49 +7,63 @@ import {
     Paper,
     Stack,
     Typography,
-    Avatar,
     TextField,
     InputAdornment,
     Divider,
     Button,
+    CircularProgress,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import CustomButton from "@/app/_components/CustomButton";
 import React from "react";
 import { ChevronRight } from "@mui/icons-material";
+import { useRouter } from "next/navigation";
+import useSWR from "swr";
+import { apiFetcher } from "@/app/lib/api";
+import { useFeedbackContext } from "@/app/_providers/FeedbackProvider";
 
 export default function TalentHomePage() {
     const [searchRole, setSearchRole] = React.useState("");
+    const router = useRouter();
+    const { showError } = useFeedbackContext();
 
-    const projects = [
-        {
-            id: 1,
-            title: "Project A",
-            candidatesAppiled: 55,
-            completedInterview: 18,
-            createdAt: "2024-05-01",
-            createdBy: "John Doe",
-            roles: ["UX Designer", "Frontend Developer"],
-        },
-        {
-            id: 2,
-            title: "Project A",
-            candidatesAppiled: 55,
-            completedInterview: 18,
-            createdAt: "2024-05-01",
-            createdBy: "John Doe",
-            roles: ["UX Designer", "Frontend Developer"],
-        },
-        {
-            id: 3,
-            title: "Project A",
-            candidatesAppiled: 55,
-            completedInterview: 18,
-            createdAt: "2024-05-01",
-            createdBy: "John Doe",
-            roles: ["UX Designer", "Frontend Developer"],
-        },
+    const { data: searchData, error: searchError, isLoading } = useSWR(
+        searchRole ? ["/talent/profiles/search", searchRole] : null,
+        ([url, role]) =>
+            apiFetcher(url, {
+                method: "POST",
+                body: {
+                    skills: role ? [role] : [],
+                    available_only: true,
+                    limit: 20,
+                },
+            }),
+        { revalidateOnFocus: false, dedupingInterval: 5000 }
+    );
+
+    const profiles = searchData?.profiles || [];
+    const isEmpty = !isLoading && profiles.length === 0 && !searchError;
+
+    const mockProjects = [
+        { id: 1, title: "Fintech onboarding squad", candidatesApplied: 12, completedMatchmaking: 5, createdAt: "2026-04-18", createdBy: "Talent Acquisition", roles: ["Frontend Engineer", "QA Analyst"] },
+        { id: 2, title: "Marketplace redesign pod", candidatesApplied: 9, completedMatchmaking: 4, createdAt: "2026-04-20", createdBy: "Talent Acquisition", roles: ["Product Designer", "Frontend Engineer"] },
+        { id: 3, title: "Ops automation launch", candidatesApplied: 7, completedMatchmaking: 3, createdAt: "2026-04-24", createdBy: "Talent Acquisition", roles: ["Automation Engineer", "Project Coordinator"] },
     ];
+
+    const projects = profiles.length > 0 
+        ? profiles.map((profile, index) => ({
+            id: profile.profile_id || index,
+            title: profile.headline || profile.full_name || "Talent Profile",
+            candidatesApplied: profile.skills?.length || 0,
+            completedMatchmaking: profile.is_available ? 1 : 0,
+            createdAt: profile.created_at?.split("T")[0] || new Date().toISOString().split("T")[0],
+            createdBy: "Talent Acquisition",
+            roles: profile.skills?.map((s) => s.name).slice(0, 2) || ["Available"],
+        }))
+        : mockProjects;
+
+    if (searchError) {
+        console.error("Failed to fetch profiles:", searchError);
+    }
 
     return (
         <Box sx={{ backgroundColor: "#f5f5f5", py: 4 }}>
@@ -66,18 +80,13 @@ export default function TalentHomePage() {
                         <Typography
                             sx={{ fontSize: 20, fontWeight: 700, mb: 2 }}
                         >
-                            Project Insights
+                            Talent Acquisition board
                         </Typography>
                         <Typography sx={{ fontSize: 14, color: "#666" }}>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing
-                            elit, sed do eiusmod tempor incididunt ut labore et
-                            dolore magna aliqua. Ut enim ad minim veniam, quis
-                            nostrud exercitation ullamco laboris nisi ut aliquip
-                            ex ea commodo consequat. Duis aute irure dolor in
-                            reprehenderit in voluptate velit esse cillum dolore
-                            eu fugiat nulla pariatur. Excepteur sint occaecat
-                            cupidatat non proident, sunt in culpa qui officia
-                            deserunt mollit anim id est laborum
+                            Review the roles Talent Acquisition is matching for
+                            you. Once you join a squad, PM takes over updates,
+                            timelines, and task breakdowns while Secretary keeps
+                            meetings and follow-ups summarized.
                         </Typography>
                     </Paper>
 
@@ -99,7 +108,7 @@ export default function TalentHomePage() {
                             }}
                         >
                             <Typography sx={{ fontSize: 20, fontWeight: 700 }}>
-                                Build your team
+                                Open matches
                             </Typography>
                             <TextField
                                 placeholder="Search Role"
@@ -127,16 +136,37 @@ export default function TalentHomePage() {
                             />
                         </Stack>
 
-                        {/* Team members grid */}
+{/* Team members grid */}
                         <Grid container spacing={3}>
-                            {projects.map((project) => (
-                                <Grid
-                                    key={project.id}
-                                    size={{ xs: 12, sm: 6, md: 4 }}
-                                >
-                                    <ProjectCard project={project} />
+                            {isLoading ? (
+                                <Grid size={{ xs: 12 }}>
+                                    <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+                                        <CircularProgress />
+                                    </Box>
                                 </Grid>
-                            ))}
+                            ) : projects.length === 0 ? (
+                                <Grid size={{ xs: 12 }}>
+                                    <Box sx={{ textAlign: "center", py: 4 }}>
+                                        <Typography sx={{ color: "text.secondary" }}>
+                                            No profiles found. Try adjusting your search criteria.
+                                        </Typography>
+                                    </Box>
+                                </Grid>
+                            ) : (
+                                projects.map((project) => (
+                                    <Grid
+                                        key={project.id}
+                                        size={{ xs: 12, sm: 6, md: 4 }}
+                                    >
+                                        <ProjectCard
+                                            project={project}
+                                            onViewPmHandoff={() =>
+                                                router.push("/dashboard/talent")
+                                            }
+                                        />
+                                    </Grid>
+                                ))
+                            )}
                         </Grid>
                     </Paper>
                 </Stack>
@@ -146,7 +176,7 @@ export default function TalentHomePage() {
 }
 
 // Project card component
-function ProjectCard({ project }) {
+function ProjectCard({ project, onViewPmHandoff }) {
     return (
         <Paper
             sx={{
@@ -162,10 +192,10 @@ function ProjectCard({ project }) {
             <Stack direction="row" sx={{ alignItems: "flex-start", gap: 2 }}>
                 <Stack sx={{ flex: 1 }}>
                     <Typography sx={{ fontWeight: 700, fontSize: 16 }}>
-                        {project.role?.[0] || "UX Designer"}
+                        {project.roles?.[0] || "Frontend Engineer"}
                     </Typography>
                     <Typography sx={{ fontSize: 13, color: "#666" }}>
-                        2 weeks ago
+                        {project.title}
                     </Typography>
                 </Stack>
             </Stack>
@@ -184,10 +214,10 @@ function ProjectCard({ project }) {
             >
                 <Box sx={{ textAlign: "center" }}>
                     <Typography sx={{ fontSize: 17, fontWeight: 500 }}>
-                        55
+                        {project.candidatesApplied}
                     </Typography>
                     <Typography sx={{ fontSize: 12, fontWeight: 300 }}>
-                        Candidates Applied
+                        Candidates applied
                     </Typography>
                 </Box>
                 <Divider
@@ -197,10 +227,10 @@ function ProjectCard({ project }) {
                 />
                 <Box sx={{ textAlign: "center" }}>
                     <Typography sx={{ fontSize: 17, fontWeight: 500 }}>
-                        18
+                        {project.completedMatchmaking}
                     </Typography>
                     <Typography sx={{ fontSize: 12, fontWeight: 300 }}>
-                        Candidates Interviewed
+                        Matchmaking completed
                     </Typography>
                 </Box>
             </Stack>
@@ -215,13 +245,14 @@ function ProjectCard({ project }) {
                 }}
             >
                 <Typography sx={{ fontSize: 12, fontWeight: 13 }}>
-                    Created by <b>Abdul</b>
+                    Managed by <b>{project.createdBy}</b>
                 </Typography>
                 <Button
                     sx={{ color: "text.primary" }}
                     endIcon={<ChevronRight />}
+                    onClick={onViewPmHandoff}
                 >
-                    View Details
+                    View PM handoff
                 </Button>
             </Stack>
         </Paper>

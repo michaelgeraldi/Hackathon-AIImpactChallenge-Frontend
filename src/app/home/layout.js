@@ -3,7 +3,6 @@
 import {
     Container,
     Stack,
-    AvatarGroup,
     Avatar,
     Paper,
     Box,
@@ -46,7 +45,7 @@ export default function HomepageLayout({ children }) {
     const open = Boolean(anchorEl);
 
     return (
-        <NavigationBarProvider defaultActive="Homepage">
+        <NavigationBarProvider defaultActive="Talent Acquisition">
             <Container
                 maxWidth="xl"
                 disableGutters
@@ -66,8 +65,8 @@ export default function HomepageLayout({ children }) {
                     {/* Navigation Bar */}
                     <NavigationBar
                         tabs={[
-                            { label: "Homepage" },
-                            { label: "Projects" },
+                            { label: "Talent Acquisition" },
+                            { label: "PM Workspace" },
                         ]}
                     />
 

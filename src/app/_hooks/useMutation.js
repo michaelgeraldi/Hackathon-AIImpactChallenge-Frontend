@@ -10,7 +10,7 @@ export default function useMutation(url, options = {}) {
     );
 
     const post = (body, extra = {}) => {
-        trigger({ method: "POST", body, ...extra });
+        return trigger({ method: "POST", body, ...extra });
     };
 
     const put = (body, extra = {}) =>

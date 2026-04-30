@@ -6,6 +6,7 @@ import theme from "../theme/theme";
 import { Poppins } from "next/font/google";
 import { SWRConfig } from "swr";
 import { FeedbackProvider } from "./_providers/FeedbackProvider";
+import { apiFetcher } from "./lib/api";
 
 const poppins = Poppins({
     subsets: ["latin"],
@@ -14,17 +15,6 @@ const poppins = Poppins({
 });
 
 export default function RootLayout({ children }) {
-    const fetcher = (url) => {
-        const baseURL =
-            process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-        const fullUrl = url.startsWith("http") ? url : `${baseURL}${url}`;
-
-        return fetch(fullUrl).then((res) => {
-            if (!res.ok) throw new Error("API Error");
-            return res.json();
-        });
-    };
-
     return (
         <html lang="en" style={{ height: "fit-content", overflowY: "auto" }}>
             <body
@@ -33,7 +23,7 @@ export default function RootLayout({ children }) {
             >
                 <SWRConfig
                     value={{
-                        fetcher: fetcher,
+                        fetcher: apiFetcher,
                         revalidateOnFocus: false,
                         revalidateOnReconnect: false,
                     }}

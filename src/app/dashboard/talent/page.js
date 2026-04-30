@@ -7,15 +7,15 @@ import WorkerMessagesPage from "./_components/WorkerMessagesPage";
 import WorkerReportPage from "./_components/WorkerReportPage";
 
 export default function WorkerPage() {
-    const { active, setActive } = useNavigationBarContext();
+    const { active } = useNavigationBarContext();
 
-    if (active === "Overview") {
+    if (active === "PM Updates") {
         return <WorkerOverviewPage />;
-    } else if (active === "Tracker") {
+    } else if (active === "PM Tasks") {
         return <WorkerTrackerPage />;
-    } else if (active === "Report") {
+    } else if (active === "Secretary Reports") {
         return <WorkerReportPage />;
-    } else if (active === "Messages") {
+    } else if (active === "Secretary Chat") {
         return <WorkerMessagesPage />;
     }
 }

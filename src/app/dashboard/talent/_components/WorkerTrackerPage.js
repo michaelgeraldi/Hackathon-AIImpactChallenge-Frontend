@@ -1,97 +1,94 @@
 "use client";
 
-import { Box } from "@mui/material";
+import { Box, Typography, CircularProgress } from "@mui/material";
 import ActivitySection, {
     useActivitySection,
 } from "../../../_components/ActivitySection";
 
-// Icon imports
 import CustomCard from "@/app/_components/CustomCard";
 import KanbanBoard from "@/app/_components/KanbanBoard";
+import useSWR from "swr";
+import { apiFetcher } from "@/app/lib/api";
+import { getWorkspaceSession } from "@/app/lib/workspace-session";
 
 export default function WorkerTrackerPage() {
     const activitySectionHook = useActivitySection();
 
-    const kanbanColumns = [
-        {
-            id: "todo",
-            title: "To Do",
-            color: "#5B63FF",
-            count: 4,
-            tasks: [
-                {
-                    id: 1,
-                    category: "UX Design",
-                    title: "Web UI Kit Automation",
-                    assignee: "Abdul",
-                    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=abdul",
-                    comments: 65,
-                    attachments: 70,
-                },
-            ],
-        },
-        {
-            id: "inprogress",
-            title: "In Progress",
-            color: "#FFC107",
-            count: 4,
-            tasks: [
-                {
-                    id: 1,
-                    category: "UX Design",
-                    title: "Web UI Kit Automation",
-                    assignee: "Abdul",
-                    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=abdul",
-                    comments: 65,
-                    attachments: 70,
-                },
-            ],
-        },
-        {
-            id: "review",
-            title: "Under Review",
-            color: "#FF7A59",
-            count: 4,
-            tasks: [
-                {
-                    id: 1,
-                    category: "UX Design",
-                    title: "Web UI Kit Automation",
-                    assignee: "Abdul",
-                    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=abdul",
-                    comments: 65,
-                    attachments: 70,
-                },
-            ],
-        },
-        {
-            id: "completed",
-            title: "Completed",
-            color: "#52C77B",
-            count: 4,
-            tasks: [
-                {
-                    id: 1,
-                    category: "UX Design",
-                    title: "Web UI Kit Automation",
-                    assignee: "Abdul",
-                    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=abdul",
-                    comments: 65,
-                    attachments: 70,
-                },
-            ],
-        },
-    ];
+    const session = getWorkspaceSession();
+    const projectId = session.project_id;
 
-    return (
+    const { data: timelineData, isLoading } = useSWR(
+        projectId ? `/pm/projects/${projectId}/timeline` : null,
+        (url) => apiFetcher(url),
+        { revalidateOnFocus: false }
+    );
+
+    const timelineEntries = timelineData?.timeline?.entries || [];
+
+    const getStatusColumn = (status) => {
+        switch (status) {
+            case "not_started": return "todo";
+            case "in_progress": return "inprogress";
+            case "completed": return "completed";
+            case "blocked": return "review";
+            default: return "todo";
+        }
+    };
+
+    const columnsMap = {
+        todo: { id: "todo", title: "To Do", color: "#5B63FF", tasks: [] },
+        inprogress: { id: "inprogress", title: "In Progress", color: "#FFC107", tasks: [] },
+        review: { id: "review", title: "Under Review", color: "#FF7A59", tasks: [] },
+        completed: { id: "completed", title: "Completed", color: "#52C77B", tasks: [] },
+    };
+
+    timelineEntries.forEach((entry) => {
+        const columnId = getStatusColumn(entry.status);
+        if (columnsMap[columnId]) {
+            columnsMap[columnId].tasks.push({
+                id: entry.entry_id,
+                category: entry.entry_type === "milestone" ? "PM Milestone" : entry.entry_type === "task" ? "PM Task" : "Deadline",
+                title: entry.title,
+                assignee: entry.assigned_to || "Unassigned",
+                avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${entry.assigned_to || "unassigned"}`,
+                comments: 0,
+                attachments: 0,
+            });
+        }
+    });
+
+    const kanbanColumns = Object.values(columnsMap).map(col => ({
+        ...col,
+        count: col.tasks.length,
+    }));
+
+return (
         <Box sx={{ minHeight: "100vh" }}>
+            <Typography sx={{ mb: 2, fontWeight: 700, fontSize: 22 }}>
+                PM delivery board
+            </Typography>
+            <Typography sx={{ mb: 3, color: "text.secondary" }}>
+                Keep your assigned tasks, review rounds, and Secretary follow-ups visible while you deliver.
+            </Typography>
             {/* Activity Section */}
             <CustomCard elevation={0} sx={{ mb: 3 }}>
                 <ActivitySection {...activitySectionHook} />
             </CustomCard>
 
             {/* Kanban Board */}
-            <KanbanBoard columns={kanbanColumns} />
+            {isLoading ? (
+                <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+                    <CircularProgress />
+                </Box>
+            ) : timelineEntries.length === 0 ? (
+                <CustomCard>
+                    <Typography sx={{ textAlign: "center", color: "text.secondary", py: 4 }}>
+                        No tasks yet. Tasks will appear after PM creates a task breakdown.
+                    </Typography>
+                </CustomCard>
+            ) : (
+                <KanbanBoard columns={kanbanColumns} />
+            )}
         </Box>
     );
 }

@@ -1,26 +1,58 @@
+"use client";
+
 import CustomButton from "@/app/_components/CustomButton";
 import CustomIconButton from "@/app/_components/CustomIconButton";
-import { Avatar, Box, Grid, Paper, Stack, Typography } from "@mui/material";
+import { Avatar, Box, Grid, Paper, Stack, Typography, CircularProgress } from "@mui/material";
 import CustomCard from "../../../_components/CustomCard";
 import CustomChatCard from "../../../_components/CustomChatCard";
+import { useFeedbackContext } from "@/app/_providers/FeedbackProvider";
+import useSWR from "swr";
+import { apiFetcher } from "@/app/lib/api";
+import { getWorkspaceSession } from "@/app/lib/workspace-session";
 
-// Icon imports
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 export default function ClientReportPage() {
+    const { showInfo } = useFeedbackContext();
+    const session = getWorkspaceSession();
+    const projectId = session.project_id;
+
+    const { data: reportData, isLoading, error } = useSWR(
+        projectId ? ["/pm/reports", projectId] : null,
+        ([url, pid]) => apiFetcher(url, {
+            method: "POST",
+            body: {
+                project_id: pid,
+                cadence: "weekly",
+                days_since_last_report: 7,
+                requester_notes: "Get project status report",
+            },
+        }),
+        { revalidateOnFocus: false }
+    );
+
+    const report = reportData?.result;
+    const contextRecord = reportData?.context_record;
+
     return (
         <Grid container sx={{ mt: 2.5 }} spacing={2.5}>
             <Grid size={7}>
-                {/* Executive Summary */}
-                <CustomCard title="Executive Summary">
-                    <Typography>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        Sed do eiusmod tempor incididunt ut labore et dolore
-                        magna aliqua. Ut enim ad minim veniam, quis nostrud
-                        exercitation ullamco laboris nisi ut aliquip ex ea
-                        commodo consequat.
-                    </Typography>
+{/* Executive Summary */}
+                <CustomCard title="PM Executive Summary">
+                    {isLoading ? (
+                        <Box sx={{ display: "flex", justifyContent: "center", py: 2 }}>
+                            <CircularProgress size={24} />
+                        </Box>
+                    ) : report ? (
+                        <Typography>
+                            {report.summary || "No summary available"}
+                        </Typography>
+                    ) : (
+                        <Typography>
+                            No report available. Create a project and generate a report to see data here.
+                        </Typography>
+                    )}
                 </CustomCard>
 
                 <Grid container spacing={2.5} sx={{ mt: 2.5 }}>
@@ -29,7 +61,7 @@ export default function ClientReportPage() {
                         sx={{ display: "flex", flexDirection: "column" }}
                     >
                         {/* Rank Performance */}
-                        <CustomCard sx={{ flex: 1 }} title="Rank Performance">
+                        <CustomCard sx={{ flex: 1 }} title="PM work checker">
                             <Stack sx={{ gap: 2.5, mt: 2 }}>
                                 {[1, 2, 3].map((rank) => (
                                     <Stack
@@ -77,7 +109,7 @@ export default function ClientReportPage() {
                                                         color: "text.secondary",
                                                     }}
                                                 >
-                                                    UX Designer
+                                                    Frontend Engineer
                                                 </Typography>
                                             </Box>
                                         </Stack>
@@ -105,7 +137,7 @@ export default function ClientReportPage() {
                                                         color: "text.secondary",
                                                     }}
                                                 >
-                                                    Punctuality
+                                                    Delivery score
                                                 </Typography>
                                             </Box>
                                             <Box sx={{ textAlign: "center" }}>
@@ -124,7 +156,7 @@ export default function ClientReportPage() {
                                                         color: "text.secondary",
                                                     }}
                                                 >
-                                                    Feedback
+                                                    Checker status
                                                 </Typography>
                                             </Box>
                                         </Stack>
@@ -134,13 +166,13 @@ export default function ClientReportPage() {
                         </CustomCard>
 
                         {/* Task in Progress */}
-                        <CustomCard sx={{ mt: 2.5 }} title="Task in Progress">
+                        <CustomCard sx={{ mt: 2.5 }} title="PM active timeline">
                             <Box sx={{ mt: 1.5 }}>
                                 <Box>
                                     <Typography
                                         sx={{ fontWeight: 600, fontSize: 12 }}
                                     >
-                                        Wireframe Setup
+                                        Homepage polish handoff
                                     </Typography>
                                     <Avatar
                                         alt="User 1"
@@ -165,12 +197,12 @@ export default function ClientReportPage() {
                     </Grid>
                     <Grid size={6}>
                         <CustomCard
-                            title="Kira (AI Agent) Live Feed"
-                            subtitle="What our agent has been doing for you"
+                            title="Secretary live feed"
+                            subtitle="MoM, summaries, and response suggestions prepared for this workspace"
                         >
                             <Stack sx={{ mt: 3, gap: 5 }}>
-                                <AiReportItem />
-                                <AiReportItem />
+                                <AiReportItem onReview={() => showInfo("Secretary highlighted this update as ready for a client-facing review.")} />
+                                <AiReportItem onReview={() => showInfo("Secretary suggested turning this summary into a PM escalation before sending it out.")} />
                             </Stack>
                         </CustomCard>
                     </Grid>
@@ -181,7 +213,7 @@ export default function ClientReportPage() {
             <Grid size={5}>
                 <Stack sx={{ height: "100%" }}>
                     <Box sx={{ flex: 1, display: "flex" }}>
-                        <CustomChatCard />
+                        <CustomChatCard title="Secretary chat summary" />
                     </Box>
                     <Paper
                         sx={{
@@ -195,7 +227,7 @@ export default function ClientReportPage() {
                         }}
                     >
                         <CustomIconButton icon={<ChevronLeftIcon />} />
-                        <Typography>Report Week 1</Typography>
+                        <Typography>Secretary Report - Week 1</Typography>
                         <CustomIconButton icon={<ChevronRightIcon />} />
                     </Paper>
                 </Stack>
@@ -204,16 +236,17 @@ export default function ClientReportPage() {
     );
 }
 
-function AiReportItem() {
+function AiReportItem({ onReview }) {
     return (
         <Box>
             <Typography sx={{ fontWeight: 500 }}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat.
+                Secretary summarized the latest standup, extracted the PM risk
+                list, and drafted a client-facing update so the team can reply
+                faster.
             </Typography>
-            <CustomButton sx={{ mt: 2 }}>Action</CustomButton>
+            <CustomButton sx={{ mt: 2 }} onClick={onReview}>
+                Review suggestion
+            </CustomButton>
         </Box>
     );
 }

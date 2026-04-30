@@ -16,7 +16,7 @@ import ClientMessagesPage from "./_components/ClientMessagesPage";
 import ClientTrackerPage from "./_components/ClientTrackerPage";
 
 export default function ClientPage() {
-    const { active, setActive } = useNavigationBarContext();
+    const { active } = useNavigationBarContext();
 
     const { data, error, isLoading } = useSWR("/pm/health");
 
@@ -24,13 +24,13 @@ export default function ClientPage() {
         console.debug("Health Check: ", { data, error, isLoading });
     }, [data, error, isLoading]);
 
-    if (active === "Overview") {
+    if (active === "PM Updates") {
         return <ClientOverviewPage />;
-    } else if (active === "Tracker") {
+    } else if (active === "PM Tasks") {
         return <ClientTrackerPage />;
-    } else if (active === "Report") {
+    } else if (active === "Secretary Reports") {
         return <ClientReportPage />;
-    } else if (active === "Messages") {
+    } else if (active === "Secretary Chat") {
         return <ClientMessagesPage />;
     }
 }

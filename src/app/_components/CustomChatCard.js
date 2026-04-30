@@ -12,7 +12,12 @@ import CustomIconButton from "../_components/CustomIconButton";
 import AddIcon from "@mui/icons-material/Add";
 import KeyboardVoiceIcon from "@mui/icons-material/KeyboardVoice";
 
-export default function CustomChatCard() {
+export default function CustomChatCard({
+    title = "Secretary assistant",
+    subtitle = "Use /secretary to turn the current thread into a summary, action items, or a suggested reply.",
+    greeting = "Hi, Secretary is ready to help with summaries, MoM, and draft responses.",
+    placeholder = "Ask Secretary for a summary or next reply...",
+}) {
     return (
         <Paper
             elevation={1}
@@ -39,12 +44,21 @@ export default function CustomChatCard() {
                         flex: 1,
                         display: "flex",
                         flexDirection: "column",
-                        justifyContent: "center",
+                        justifyContent: "space-between",
+                        gap: 2,
                     }}
                 >
-                    <Typography sx={{ px: 2 }}>
-                        Hi,
-                        <br /> How can I help you?
+                    <Box sx={{ px: 2, pt: 1 }}>
+                        <Typography sx={{ fontWeight: 700, fontSize: 18 }}>
+                            {title}
+                        </Typography>
+                        <Typography sx={{ mt: 0.75, color: "text.secondary" }}>
+                            {subtitle}
+                        </Typography>
+                    </Box>
+
+                    <Typography sx={{ px: 2, lineHeight: 1.7 }}>
+                        {greeting}
                     </Typography>
                 </Box>
 
@@ -63,7 +77,7 @@ export default function CustomChatCard() {
                 >
                     <CustomIconButton icon={<AddIcon />} />
                     <TextField
-                        placeholder="Type your message here..."
+                        placeholder={placeholder}
                         fullWidth
                         variant="outlined"
                         sx={{
