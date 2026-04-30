@@ -273,7 +273,7 @@ export default function ProjectForm({ onClose }) {
                         gap: 2,
                     }}
                 >
-                    <CustomButton variant="outlined" onClick={() => showInfo("Project creation cancelled.")}>
+                    <CustomButton variant="outlined" onClick={onClose}>
                         Cancel
                     </CustomButton>
                     <CustomButton type="submit" disabled={isLoading}>

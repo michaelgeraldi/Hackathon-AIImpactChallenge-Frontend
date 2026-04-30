@@ -134,14 +134,14 @@ export default function LoginPage() {
                     <CustomButton
                         sx={{ mb: 2 }}
                         fullWidth
-                        onClick={() => router.push("/home?role=client")}
+                        onClick={() => router.push("/home/client")}
                     >
                         Log In as Client
                     </CustomButton>
                     <CustomButton
                         sx={{ mb: 2 }}
                         fullWidth
-                        onClick={() => router.push("/home?role=talent")}
+                        onClick={() => router.push("/home/talent")}
                     >
                         Log In as Talent
                     </CustomButton>

@@ -5,14 +5,14 @@ import { Box, Typography, Badge, Paper } from "@mui/material";
 
 // --- NavigationBar component ---
 
-const tabs = [
+const defaultTabs = [
     { label: "Overview" },
     { label: "Tracker" },
     { label: "Report" },
     { label: "Messages", badge: 3 },
 ];
 
-export default function NavigationBar() {
+export default function NavigationBar({ tabs = defaultTabs }) {
     const { active, setActive } = useNavigationBarContext();
 
     return (
@@ -86,8 +86,8 @@ const NavigationBarContext = React.createContext();
 export const useNavigationBarContext = () =>
     React.useContext(NavigationBarContext);
 
-export function NavigationBarProvider({ children }) {
-    const [active, setActive] = React.useState("Report");
+export function NavigationBarProvider({ children, defaultActive = "Overview" }) {
+    const [active, setActive] = React.useState(defaultActive);
 
     return (
         <NavigationBarContext.Provider value={{ active, setActive }}>
