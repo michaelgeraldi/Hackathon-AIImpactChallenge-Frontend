@@ -23,7 +23,7 @@ export default function ClientProjectForm({ onClose }) {
         workers: [{ role: "", jobDescription: "" }],
     });
 
-    const { post, isLoading } = useMutation("/pm/projects/bootstrap");
+    const { data, post, isLoading } = useMutation("/pm/projects/bootstrap");
     const { showSuccess, showError, showWarning, showInfo } =
         useFeedbackContext();
 
@@ -66,8 +66,9 @@ export default function ClientProjectForm({ onClose }) {
         try {
             e.preventDefault();
 
+            const uuid = crypto.randomUUID();
             const body = {
-                project_id: crypto.randomUUID(),
+                project_id: uuid,
                 project_name: formData.projectName,
                 scope: formData.scope,
                 client_name: "John Doe", // Replace with actual client name
@@ -101,13 +102,12 @@ export default function ClientProjectForm({ onClose }) {
                 timeline_notes: "Client wants weekly updates",
             };
 
-            const response = await post({ overview: body });
-
-            if (response?.snapshot) {
+            const result = await post({ overview: body });
+            if (result?.snapshot) {
+                console.log("Project created with UUID: ", result?.snapshot?.project_id);
                 showSuccess("Project created successfully!");
+                onClose();
             }
-
-            onClose();
         } catch (error) {
             console.log(error);
             showError("Failed to create project.");

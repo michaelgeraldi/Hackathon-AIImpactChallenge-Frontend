@@ -9,15 +9,17 @@ export default function useMutation(url, options = {}) {
         options,
     );
 
-    const post = (body, extra = {}) => {
-        trigger({ method: "POST", body, ...extra });
+    const post = async (body, extra = {}) => {
+        return await trigger({ method: "POST", body, ...extra });
     };
 
-    const put = (body, extra = {}) =>
-        trigger({ method: "PUT", body, ...extra });
+    const put = async (body, extra = {}) => {
+        return await trigger({ method: "PUT", body, ...extra });
+    };
 
-    const del = (body, extra = {}) =>
-        trigger({ method: "DELETE", body, ...extra });
+    const del = async (body, extra = {}) => {
+        return await trigger({ method: "DELETE", body, ...extra });
+    };
 
     return {
         post,
