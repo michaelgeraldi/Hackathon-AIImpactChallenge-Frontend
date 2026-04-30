@@ -5,23 +5,34 @@ import { Box, Grid, Link, Stack, Typography, Container } from "@mui/material";
 import CustomButton from "./_components/CustomButton";
 import CustomTextField from "./_components/CustomTextField";
 import { useRouter } from "next/navigation";
+import { useProgressIndicator } from "./_providers/ProgressIndicatorProvider";
 
 export default function LoginPage() {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
     const [error, setError] = React.useState(null);
     const router = useRouter();
+    const { startProgress, completeProgress } = useProgressIndicator();
 
     const handleLogin = (userType) => {
-        if (email === "user1@email.com" && password === "kirjau123") {
-            setError(null);
-            router.push(`/home/${userType}`);
-            localStorage.setItem("userType", userType);
-            localStorage.setItem("token", crypto.randomUUID());
-            return;
-        }
+        try {
+            startProgress("Logging in...");
 
-        setError("Incorrect email or password. Please try again.");
+            if (email === "user1@email.com" && password === "kirjau123") {
+                setError(null);
+                router.push(`/home/${userType}`);
+                localStorage.setItem("userType", userType);
+                localStorage.setItem("token", crypto.randomUUID());
+                return;
+            }
+
+            setError("Incorrect email or password. Please try again.");
+        } catch (err) {
+            setError("An unexpected error occurred. Please try again.");
+            return;
+        } finally {
+            completeProgress();
+        }
     };
 
     return (
