@@ -106,14 +106,16 @@ export default function TalentHomePage() {
                                 value={searchRole}
                                 onChange={(e) => setSearchRole(e.target.value)}
                                 size="small"
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <SearchIcon
-                                                sx={{ color: "#999" }}
-                                            />
-                                        </InputAdornment>
-                                    ),
+                                slotProps={{
+                                    input: {
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <SearchIcon
+                                                    sx={{ color: "#999" }}
+                                                />
+                                            </InputAdornment>
+                                        ),
+                                    },
                                 }}
                                 sx={{
                                     width: 280,
