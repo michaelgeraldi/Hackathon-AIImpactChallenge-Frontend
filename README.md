@@ -1,13 +1,13 @@
-# Keroyok.AI Frontend
+# Kirjau Frontend
 
 A modern project management platform providing a comprehensive dashboard for project tracking, task management, and team collaboration.
 
 ## 🎯 Project Overview
 
-Keroyokin is a full-featured project management application designed for two primary user roles:
+Kirjau is a full-featured project management application designed for two primary user roles:
 
-- **Clients**: Project owners who can manage projects, track progress, and provide feedback with the help of AI.
-- **Talent/Workers**: Freelancers and professionals who complete tasks and receive performance feedback from AI.
+- **Clients**: Project owners who can manage projects, track progress, and provide feedback with help from AI Agents.
+- **Talent/Workers**: Freelancers and professionals who complete tasks and receive performance feedback from AI Agents.
 
 ## 📁 Project Structure
 
