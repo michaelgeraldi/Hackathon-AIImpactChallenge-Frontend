@@ -4,7 +4,7 @@ import CustomButton from "@/app/_components/CustomButton";
 import AddIcon from "@mui/icons-material/Add";
 import { Box, Modal, Stack, Typography, Container, Paper } from "@mui/material";
 import React from "react";
-import ProjectCard from "./ProjectCard";
+import TalentProjectCard from "./TalentProjectCard";
 // import ProjectForm from "./ProjectForm";
 
 export default function TalentProjectsPage() {
@@ -125,7 +125,7 @@ export default function TalentProjectsPage() {
                 {/* Projects List */}
                 <Stack sx={{ gap: 2 }}>
                     {projects.map((project) => (
-                        <ProjectCard
+                        <TalentProjectCard
                             key={project.id}
                             project={project}
                             isSelected={selectedProjectId === project.id}

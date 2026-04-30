@@ -12,7 +12,11 @@ import {
 import CustomButton from "@/app/_components/CustomButton";
 import { useRouter } from "next/navigation";
 
-export default function ProjectCard({ project, isSelected = false, onClick }) {
+export default function TalentProjectCard({
+    project,
+    isSelected = false,
+    onClick,
+}) {
     const router = useRouter();
 
     return (

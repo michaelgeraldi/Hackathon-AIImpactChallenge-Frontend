@@ -5,7 +5,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { Box, Modal, Stack, Typography, Container, Paper } from "@mui/material";
 import React from "react";
 import ProjectForm from "./ProjectForm";
-import ProjectCard from "./ProjectCard";
+import ClientProjectCard from "./ClientProjectCard";
 
 export default function ClientProjectsPage() {
     const [isCreatingProject, setCreatingProject] = React.useState(false);
@@ -125,7 +125,7 @@ export default function ClientProjectsPage() {
                 {/* Projects List */}
                 <Stack sx={{ gap: 2 }}>
                     {projects.map((project) => (
-                        <ProjectCard
+                        <ClientProjectCard
                             key={project.id}
                             project={project}
                             isSelected={selectedProjectId === project.id}
