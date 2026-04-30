@@ -1,36 +1,116 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Keroyok.AI Frontend
 
-## Getting Started
+A modern project management platform providing a comprehensive dashboard for project tracking, task management, and team collaboration.
 
-First, run the development server:
+## 🎯 Project Overview
+
+Keroyokin is a full-featured project management application designed for two primary user roles:
+
+- **Clients**: Project owners who can manage projects, track progress, and provide feedback with the help of AI.
+- **Talent/Workers**: Freelancers and professionals who complete tasks and receive performance feedback from AI.
+
+## 📁 Project Structure
+
+```
+src/
+├── app/                          # Next.js App Router
+│   ├── layout.js                # Root layout with providers
+│   ├── page.js                  # Login page
+│   ├── _components/             # Shared components
+│   │   ├── CustomButton.js
+│   │   ├── CustomCard.js
+│   │   ├── CustomTextField.js
+│   │   ├── CustomBarChart.js
+│   │   ├── CustomDonutChart.js
+│   │   ├── KanbanBoard.js
+│   │   ├── NavigationBar.js
+│   │   └── ...more components
+│   ├── _providers/              # Context providers
+│   │   ├── FeedbackProvider.js  # Snackbar notifications
+│   │   └── ProgressIndicatorProvider.js  # Progress tracking
+│   ├── _hooks/                  # Custom React hooks
+│   │   ├── useProject.js        # Project data fetching
+│   │   └── useMutation.js       # Data mutation handling
+│   ├── home/                    # Home pages
+│   │   ├── client/              # Client home page
+│   │   └── talent/              # Worker home page
+│   ├── dashboard/               # Dashboard pages
+│   │   ├── client/              # Client dashboard
+│   │   └── talent/              # Worker dashboard
+│   └── lib/                     # Utilities
+│       └── api.js              # API configuration
+├── hooks/                       # Additional custom hooks
+└── theme/
+    └── theme.js                # Material-UI theme configuration
+```
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 18+ and npm/yarn/pnpm installed
+- Modern web browser
+
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone <repository-url>
+cd keroyokin-frontend
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
+
+3. Set up environment variables (if needed):
+
+```bash
+cp .env.example .env.local
+# Edit .env.local with your configuration
+```
+
+### Development
+
+Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The application will be available at [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## 🔐 Authentication
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Demo Credentials
 
-## Learn More
+The application includes a demo login system for testing:
 
-To learn more about Next.js, take a look at the following resources:
+- **Email**: `user1@email.com`
+- **Password**: `kirjau123`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+You can log in as either a **Client** or **Talent** user to test different features.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📚 Available Pages
 
-## Deploy on Vercel
+### Client Routes
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `/` - Login page
+- `/home/client` - Client home page with projects
+- `/dashboard/client` - Client dashboard and project overview
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Worker Routes
+
+- `/home/talent` - Talent home page with assigned projects
+- `/dashboard/talent` - Talent dashboard with performance metrics
+
+---
+
+**Built with ❤️ for the Dicoding Hackathon**
