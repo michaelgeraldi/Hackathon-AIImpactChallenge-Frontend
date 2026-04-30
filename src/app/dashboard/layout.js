@@ -1,27 +1,28 @@
 "use client";
 
 import {
-    Container,
-    Stack,
-    AvatarGroup,
     Avatar,
-    Paper,
+    AvatarGroup,
     Box,
-    Popover,
-    MenuList,
+    Container,
     MenuItem,
+    MenuList,
+    Paper,
+    Popover,
+    Stack,
 } from "@mui/material";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Logo from "../_components/Logo";
+import { useEffect, useState } from "react";
 import CustomIconButton from "../_components/CustomIconButton";
-import NavigationBar from "../_components/NavigationBar";
-import { NavigationBarProvider } from "../_components/NavigationBar";
+import Logo from "../_components/Logo";
+import NavigationBar, {
+    NavigationBarProvider,
+} from "../_components/NavigationBar";
 
 // Icon imports
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 
 export default function DashboardLayout({ children }) {
     const router = useRouter();
@@ -36,14 +37,15 @@ export default function DashboardLayout({ children }) {
     };
 
     const handleLogout = () => {
-        // Clear auth token
         localStorage.removeItem("token");
+        localStorage.removeItem("userType");
+
         handleClose();
-        // Navigate to login page
         router.push("/");
     };
 
     const open = Boolean(anchorEl);
+    const userType = localStorage.getItem("userType") || null;
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -123,9 +125,14 @@ export default function DashboardLayout({ children }) {
                                 <CustomIconButton
                                     icon={<SearchOutlinedIcon />}
                                 />
-                                <CustomIconButton
-                                    icon={<NotificationsNoneOutlinedIcon />}
-                                />
+                                {userType && (
+                                    <CustomIconButton
+                                        icon={<HomeOutlinedIcon />}
+                                        onClick={() =>
+                                            router.push(`/home/${userType}`)
+                                        }
+                                    />
+                                )}
                                 <Avatar
                                     alt="User Avatar"
                                     src="https://api.dicebear.com/7.x/avataaars/svg?backgroundColor=ffffff&seed=abdul"

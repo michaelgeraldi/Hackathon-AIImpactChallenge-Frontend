@@ -36,10 +36,10 @@ export default function HomepageLayout({ children }) {
     };
 
     const handleLogout = () => {
-        // Clear auth token
         localStorage.removeItem("token");
+        localStorage.removeItem("userType");
+
         handleClose();
-        // Navigate to login page
         router.push("/");
     };
 

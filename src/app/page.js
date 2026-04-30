@@ -16,6 +16,7 @@ export default function LoginPage() {
         if (email === "user1@email.com" && password === "kirjau123") {
             setError(null);
             router.push(`/home/${userType}`);
+            localStorage.setItem("userType", userType);
             localStorage.setItem("token", crypto.randomUUID());
             return;
         }

@@ -16,15 +16,15 @@ import ActivitySection, {
 } from "../../../_components/ActivitySection";
 import ClientProjectForm from "../../../home/client/_components/ClientProjectForm";
 
-export default function ClientOverviewPage() {
+export default function ClientOverviewPage({ data }) {
     const [isCreatingProject, setCreatingProject] = React.useState(false);
     const activitySectionHook = useActivitySection();
 
     return (
         <Box>
             <CollapsibleTitle
-                title="Project name"
-                subtitle="Project description"
+                title={data?.project_name || "Project Name"}
+                subtitle={data?.description || "Project Description"}
                 defaultExpanded={false}
             >
                 <Typography>
