@@ -169,7 +169,7 @@ export default function ActivitySection({
                                 {activity.progress}%
                             </Box>
                             <Paper
-                                elevation={0}
+                                elevation={1}
                                 sx={{
                                     p: 2,
                                     borderRadius: 3,

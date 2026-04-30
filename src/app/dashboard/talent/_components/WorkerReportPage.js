@@ -6,7 +6,7 @@ import DesignServicesOutlinedIcon from "@mui/icons-material/DesignServicesOutlin
 
 export default function WorkerReportPage() {
     return (
-        <Grid container spacing={5.5}>
+        <Grid container spacing={2.5}>
             <Grid size={4}>
                 <Box>
                     <CustomCard title="Task Completetion" sx={{ flex: 1 }}>
@@ -71,7 +71,7 @@ export default function WorkerReportPage() {
 
                     <CustomCard
                         title="Training Recommendations"
-                        sx={{ flex: 1, mt: 5.5 }}
+                        sx={{ flex: 1, mt: 2.5 }}
                     >
                         <Stack sx={{ gap: 2.5, mt: 2 }}>
                             <TrainingItem

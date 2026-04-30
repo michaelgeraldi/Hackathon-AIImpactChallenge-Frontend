@@ -18,7 +18,7 @@ import TextField from "@mui/material/TextField";
 export default function MessagesCard() {
     return (
         <Paper
-            elevation={0}
+            elevation={1}
             sx={{
                 py: 5,
                 px: 5.5,

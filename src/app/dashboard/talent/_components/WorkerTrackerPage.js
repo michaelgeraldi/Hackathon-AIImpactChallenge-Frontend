@@ -86,7 +86,7 @@ export default function WorkerTrackerPage() {
     return (
         <Box sx={{ minHeight: "100vh" }}>
             {/* Activity Section */}
-            <CustomCard elevation={0} sx={{ mb: 3 }}>
+            <CustomCard sx={{ mb: 3 }}>
                 <ActivitySection {...activitySectionHook} />
             </CustomCard>
 

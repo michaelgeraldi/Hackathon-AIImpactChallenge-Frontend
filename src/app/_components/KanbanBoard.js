@@ -16,7 +16,7 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
 export default function KanbanBoard({ columns }) {
     return (
-        <Paper elevation={0} sx={{ borderRadius: 5 }}>
+        <Paper elevation={1} sx={{ borderRadius: 5 }}>
             <Stack
                 direction="row"
                 sx={{
