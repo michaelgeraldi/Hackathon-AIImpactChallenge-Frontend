@@ -2,15 +2,15 @@
 
 import React from "react";
 import { useNavigationBarContext } from "../../_components/NavigationBar";
-import ClientProjectsPage from "./_components/ClientProjectsPage";
-import ClientHomePage from "./_components/ClientHomePage";
+import TalentHomePage from "./_components/TalentHomePage";
+import TalentProjectsPage from "./_components/TalentProjectsPage";
 
-export default function ClientHome() {
+export default function TalentHome() {
     const { active, setActive } = useNavigationBarContext();
 
     if (active === "Projects") {
-        return <ClientProjectsPage />
+        return <TalentProjectsPage />
     } else if (active === "Homepage") {
-        return <ClientHomePage />
+        return <TalentHomePage />
     }
 }
