@@ -6,6 +6,7 @@ import theme from "../theme/theme";
 import { Poppins } from "next/font/google";
 import { SWRConfig } from "swr";
 import { FeedbackProvider } from "./_providers/FeedbackProvider";
+import { ProgressIndicatorProvider } from "./_providers/ProgressIndicatorProvider";
 
 const poppins = Poppins({
     subsets: ["latin"],
@@ -39,18 +40,20 @@ export default function RootLayout({ children }) {
                     }}
                 >
                     <ThemeProvider theme={theme}>
-                        <FeedbackProvider>
-                            <CssBaseline />
-                            <Box
-                                sx={{
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    height: "100vh"
-                                }}
-                            >
-                                {children}
-                            </Box>
-                        </FeedbackProvider>
+                        <ProgressIndicatorProvider>
+                            <FeedbackProvider>
+                                <CssBaseline />
+                                <Box
+                                    sx={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        height: "100vh",
+                                    }}
+                                >
+                                    {children}
+                                </Box>
+                            </FeedbackProvider>
+                        </ProgressIndicatorProvider>
                     </ThemeProvider>
                 </SWRConfig>
             </body>

@@ -22,11 +22,6 @@ export default function ClientPage() {
     const projectId = searchParams?.get("projectId");
     const { overview } = useProject(projectId);
 
-    React.useEffect(() => {
-        console.log("Project Overview: ", overview);
-        console.log("Project ID: ", projectId);
-    }, [projectId, overview])
-
     if (active === "Overview") {
         return <ClientOverviewPage data={overview} />;
     } else if (active === "Tracker") {

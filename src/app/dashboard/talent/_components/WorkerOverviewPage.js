@@ -2,29 +2,23 @@
 
 import {
     Box,
-    Collapse,
-    Grid,
-    IconButton,
-    Stack,
-    Typography,
     CircularProgress,
+    Grid,
+    Stack,
+    Typography
 } from "@mui/material";
-import * as React from "react";
-import CustomBarChart from "../../../_components/CustomBarChart";
+import {
+    useActivitySection,
+} from "../../../_components/ActivitySection";
+import CollapsibleTitle from "../../../_components/CollapsibleTitle";
 import CustomButton from "../../../_components/CustomButton";
 import CustomCard from "../../../_components/CustomCard";
 import CustomChatCard from "../../../_components/CustomChatCard";
-import CustomDonutChart from "../../../_components/CustomDonutChart";
-import CollapsibleTitle from "../../../_components/CollapsibleTitle";
-import ActivitySection, {
-    useActivitySection,
-} from "../../../_components/ActivitySection";
 
 // Icon imports
 import AddIcon from "@mui/icons-material/Add";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-export default function WorkerOverviewPage() {
+export default function WorkerOverviewPage({ data }) {
     const activitySectionHook = useActivitySection();
 
     return (
@@ -34,8 +28,8 @@ export default function WorkerOverviewPage() {
                 sx={{ alignItems: "center", justifyContent: "space-between" }}
             >
                 <CollapsibleTitle
-                    title="Project name"
-                    subtitle="Project description"
+                    title={data?.project_name || ""}
+                    subtitle={data?.description || ""}
                     defaultExpanded={false}
                 >
                     <Typography>

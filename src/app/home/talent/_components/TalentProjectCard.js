@@ -11,13 +11,16 @@ import {
 } from "@mui/material";
 import CustomButton from "@/app/_components/CustomButton";
 import { useRouter } from "next/navigation";
+import useProject from "@/app/_hooks/useProject";
 
 export default function TalentProjectCard({
+    projectId,
     project,
     isSelected = false,
     onClick,
 }) {
     const router = useRouter();
+    const { overview } = useProject(projectId);
 
     return (
         <Paper
@@ -50,7 +53,7 @@ export default function TalentProjectCard({
                         minWidth: 150,
                     }}
                 >
-                    {project.name}
+                    {overview?.project_name || "Project Name"}
                 </Typography>
 
                 {/* Team Members */}
@@ -147,7 +150,11 @@ export default function TalentProjectCard({
                 <Box>
                     <CustomButton
                         variant="outlined"
-                        onClick={() => router.push("/dashboard/talent")}
+                        onClick={() =>
+                            router.push(
+                                "/dashboard/talent?projectId=" + projectId,
+                            )
+                        }
                     >
                         Dashboard
                     </CustomButton>
