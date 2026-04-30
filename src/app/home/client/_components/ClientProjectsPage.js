@@ -6,6 +6,7 @@ import { Box, Modal, Stack, Typography, Container, Paper } from "@mui/material";
 import React from "react";
 import ClientProjectForm from "./ClientProjectForm";
 import ClientProjectCard from "./ClientProjectCard";
+import useSWR from "swr";
 
 export default function ClientProjectsPage() {
     const [isCreatingProject, setCreatingProject] = React.useState(false);

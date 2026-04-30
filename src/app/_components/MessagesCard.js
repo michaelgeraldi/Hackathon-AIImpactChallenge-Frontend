@@ -261,7 +261,7 @@ function MessageListItem({ active }) {
                 </Stack>
 
                 {/* Message Preview */}
-                <Typography sx={{ mt: 2 }}>Makan dimana siang ini?</Typography>
+                <Typography sx={{ mt: 2 }}>Lorem ipsum dolor sit amet</Typography>
             </Box>
         </Stack>
     );
