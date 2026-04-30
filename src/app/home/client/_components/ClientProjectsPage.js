@@ -9,7 +9,6 @@ import ClientProjectCard from "./ClientProjectCard";
 import useSWR from "swr";
 
 export default function ClientProjectsPage() {
-    const { data, error } = useSWR("/pm/projects/context");
     const [isCreatingProject, setCreatingProject] = React.useState(false);
     const [selectedProjectId, setSelectedProjectId] = React.useState(null);
 
@@ -36,11 +35,20 @@ export default function ClientProjectsPage() {
             status: "On Track",
             startDate: "Started on 29 Apr",
         },
+        {
+            id: "d21abb31-f1ef-4396-a7f1-cbffbe3394b8",
+            name: "Another Project",
+            members: [
+                {
+                    name: "Member 4",
+                    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=4",
+                },
+            ],
+            progress: 50,
+            status: "At Risk",
+            startDate: "Started on 15 May",
+        }
     ];
-
-    const projectIds = [
-        "715d3855-2c6c-4abc-9a92-44400a939798"
-    ]
 
     return (
         <Container maxWidth="xl" sx={{ py: 4 }}>

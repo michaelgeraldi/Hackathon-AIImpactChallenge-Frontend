@@ -12,10 +12,21 @@ import {
 import CustomButton from "@/app/_components/CustomButton";
 import { useRouter } from "next/navigation";
 import useProject from "@/app/_hooks/useProject";
+import { useEffect } from "react";
+import { useProgressIndicator } from "@/app/_providers/ProgressIndicatorProvider";
 
 export default function ProjectCard({ project, isSelected = false, onClick }) {
     const context = useProject(project.id);
     const router = useRouter();
+    const { startProgress, completeProgress } = useProgressIndicator();
+
+    useEffect(() => {
+        if (context.isLoading) {
+            startProgress("Loading project...");
+        } else {
+            completeProgress();
+        }
+    }, [context.isLoading, startProgress, completeProgress]);
 
     return (
         <Paper
@@ -48,7 +59,7 @@ export default function ProjectCard({ project, isSelected = false, onClick }) {
                         minWidth: 150,
                     }}
                 >
-                    {context?.overview?.project_name || "Project Name"}
+                    {context?.overview?.project_name || ""}
                 </Typography>
 
                 {/* Team Members */}

@@ -4,6 +4,7 @@ import { Box, Grid, Paper, Stack, Typography, Container } from "@mui/material";
 import { useState } from "react";
 import CustomTextField from "../../../_components/CustomTextField";
 import { useFeedbackContext } from "@/app/_providers/FeedbackProvider";
+import { useProgressIndicator } from "../../../_providers/ProgressIndicatorProvider";
 
 // Icon imports
 import CustomButton from "@/app/_components/CustomButton";
@@ -26,6 +27,7 @@ export default function ClientProjectForm({ onClose }) {
     const { data, post, isLoading } = useMutation("/pm/projects/bootstrap");
     const { showSuccess, showError, showWarning, showInfo } =
         useFeedbackContext();
+    const { startProgress, completeProgress } = useProgressIndicator();
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -65,6 +67,7 @@ export default function ClientProjectForm({ onClose }) {
     const handleSubmit = async (e) => {
         try {
             e.preventDefault();
+            startProgress("Creating project...");
 
             const uuid = crypto.randomUUID();
             const body = {
@@ -104,13 +107,18 @@ export default function ClientProjectForm({ onClose }) {
 
             const result = await post({ overview: body });
             if (result?.snapshot) {
-                console.log("Project created with UUID: ", result?.snapshot?.project_id);
+                console.log(
+                    "Project created with UUID: ",
+                    result?.snapshot?.project_id,
+                );
                 showSuccess("Project created successfully!");
                 onClose();
             }
         } catch (error) {
             console.log(error);
             showError("Failed to create project.");
+        } finally {
+            completeProgress();
         }
     };
 
