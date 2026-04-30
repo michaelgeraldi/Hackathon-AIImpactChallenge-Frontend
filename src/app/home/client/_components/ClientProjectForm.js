@@ -13,7 +13,7 @@ import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import useMutation from "@/app/_hooks/useMutation";
 
-export default function ProjectForm({ onClose }) {
+export default function ClientProjectForm({ onClose }) {
     const [formData, setFormData] = useState({
         projectName: "",
         description: "",

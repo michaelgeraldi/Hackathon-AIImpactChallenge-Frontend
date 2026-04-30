@@ -14,7 +14,7 @@ import AddIcon from "@mui/icons-material/Add";
 import ActivitySection, {
     useActivitySection,
 } from "../../../_components/ActivitySection";
-import ProjectForm from "../../../home/client/_components/ProjectForm";
+import ClientProjectForm from "../../../home/client/_components/ClientProjectForm";
 
 export default function ClientOverviewPage() {
     const [isCreatingProject, setCreatingProject] = React.useState(false);
@@ -90,7 +90,7 @@ export default function ClientOverviewPage() {
                 open={isCreatingProject}
                 onClose={() => setCreatingProject(false)}
             >
-                <ProjectForm />
+                <ClientProjectForm />
             </Modal>
         </Box>
     );

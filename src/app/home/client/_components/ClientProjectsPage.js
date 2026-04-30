@@ -4,7 +4,7 @@ import CustomButton from "@/app/_components/CustomButton";
 import AddIcon from "@mui/icons-material/Add";
 import { Box, Modal, Stack, Typography, Container, Paper } from "@mui/material";
 import React from "react";
-import ProjectForm from "./ProjectForm";
+import ClientProjectForm from "./ClientProjectForm";
 import ClientProjectCard from "./ClientProjectCard";
 
 export default function ClientProjectsPage() {
@@ -145,7 +145,7 @@ export default function ClientProjectsPage() {
                 open={isCreatingProject}
                 onClose={() => setCreatingProject(false)}
             >
-                <ProjectForm onClose={() => setCreatingProject(false)} />
+                <ClientProjectForm onClose={() => setCreatingProject(false)} />
             </Modal>
         </Container>
     );
