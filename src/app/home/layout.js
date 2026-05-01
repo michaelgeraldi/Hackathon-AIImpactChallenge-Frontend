@@ -43,11 +43,12 @@ export default function HomepageLayout({ children }) {
     };
 
     const open = Boolean(anchorEl);
+    const userType = localStorage.getItem("userType");
 
     useEffect(() => {
         const token = localStorage.getItem("token");
         if (!token) {
-            router.push("/")
+            router.push("/");
         }
     }, [router]);
 
@@ -73,7 +74,12 @@ export default function HomepageLayout({ children }) {
                     <NavigationBar
                         tabs={[
                             { label: "Talent Acquisition" },
-                            { label: "PM Workspace" },
+                            {
+                                label:
+                                    userType === "client"
+                                        ? "PM Workspace"
+                                        : "Talent Projects",
+                            },
                         ]}
                     />
 

@@ -1,20 +1,11 @@
 "use client";
 
-import {
-    Box,
-    CircularProgress,
-    Grid,
-    Stack,
-    Typography
-} from "@mui/material";
-import {
-    useActivitySection,
-} from "../../../_components/ActivitySection";
+import { Box, CircularProgress, Grid, Stack, Typography } from "@mui/material";
+import { useActivitySection } from "../../../_components/ActivitySection";
 import CollapsibleTitle from "../../../_components/CollapsibleTitle";
 import CustomButton from "../../../_components/CustomButton";
 import CustomCard from "../../../_components/CustomCard";
 import CustomChatCard from "../../../_components/CustomChatCard";
-import CollapsibleTitle from "../../../_components/CollapsibleTitle";
 import { useFeedbackContext } from "@/app/_providers/FeedbackProvider";
 import useSWR from "swr";
 import { apiFetcher } from "@/app/lib/api";
@@ -22,8 +13,16 @@ import { getWorkspaceSession } from "@/app/lib/workspace-session";
 
 import AddIcon from "@mui/icons-material/Add";
 
-export default function WorkerOverviewPage({ data }) {
+export default function TalentOverviewPage({ data }) {
     const activitySectionHook = useActivitySection();
+    const { showSuccess } = useFeedbackContext();
+
+    const tasks = [
+        {title: "Ship hero section polish", progress: 75},
+        {title: "Break navigation fixes into reviewable subtasks", progress: 75},
+        {title: "Prepare PM update for work checker", progress: 75},
+        {title: "Review Secretary summary before client reply", progress: 75},
+    ];
 
     return (
         <Box>
@@ -65,19 +64,31 @@ export default function WorkerOverviewPage({ data }) {
                         </Typography>
                     </CustomCard>
 
-{/* Tasks List */}
+                    {/* Tasks List */}
                     <CustomCard title="PM task breakdown" sx={{ mt: 2.5 }}>
                         <Stack sx={{ mt: 1.5, gap: 2 }}>
-                            {timelineLoading ? (
-                                <Box sx={{ display: "flex", justifyContent: "center", py: 2 }}>
+                            {false ? (
+                                <Box
+                                    sx={{
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        py: 2,
+                                    }}
+                                >
                                     <CircularProgress size={24} />
                                 </Box>
                             ) : tasks.length === 0 ? (
-                                <Typography sx={{ color: "text.secondary", textAlign: "center" }}>
-                                    No tasks yet. Tasks will appear after PM creates a task breakdown.
+                                <Typography
+                                    sx={{
+                                        color: "text.secondary",
+                                        textAlign: "center",
+                                    }}
+                                >
+                                    No tasks yet. Tasks will appear after PM
+                                    creates a task breakdown.
                                 </Typography>
                             ) : (
-tasks.map((task) => (
+                                tasks.map((task) => (
                                     <TaskListItem
                                         key={task.id}
                                         title={task.title}

@@ -21,7 +21,7 @@ export default function TalentProjectCard({
     onClick,
 }) {
     const router = useRouter();
-    const { overview } = useProject(projectId);
+    // const { overview } = useProject(projectId);
 
     return (
         <Paper
@@ -53,7 +53,7 @@ export default function TalentProjectCard({
                             fontSize: 16,
                         }}
                     >
-                        {overview?.project_name || "Project Name"}
+                        {project.name}
                     </Typography>
                 </Grid>
 
@@ -172,7 +172,7 @@ export default function TalentProjectCard({
                         variant="outlined"
                         onClick={() =>
                             router.push(
-                                "/dashboard/talent?projectId=" + projectId,
+                                "/dashboard/talent?projectId=" + project.id,
                             )
                         }
                     >

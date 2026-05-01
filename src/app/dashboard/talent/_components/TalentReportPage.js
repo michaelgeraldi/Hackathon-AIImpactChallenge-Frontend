@@ -1,27 +1,27 @@
 import { Box, Stack, Typography, Grid, CircularProgress } from "@mui/material";
-import { Box, Stack, Typography, Grid, CircularProgress } from "@mui/material";
 import CustomCard from "../../../_components/CustomCard";
 import DesignServicesOutlinedIcon from "@mui/icons-material/DesignServicesOutlined";
 import useSWR from "swr";
 import { apiFetcher } from "@/app/lib/api";
 import { getWorkspaceSession } from "@/app/lib/workspace-session";
 
-export default function WorkerReportPage() {
+export default function TalentReportPage() {
     const session = getWorkspaceSession();
     const projectId = session.project_id;
 
     const { data: reportData, isLoading } = useSWR(
         projectId ? ["/pm/reports", projectId] : null,
-        ([url, pid]) => apiFetcher(url, {
-            method: "POST",
-            body: {
-                project_id: pid,
-                cadence: "weekly",
-                days_since_last_report: 7,
-                requester_notes: "Get freelancer status report",
-            },
-        }),
-        { revalidateOnFocus: false }
+        ([url, pid]) =>
+            apiFetcher(url, {
+                method: "POST",
+                body: {
+                    project_id: pid,
+                    cadence: "weekly",
+                    days_since_last_report: 7,
+                    requester_notes: "Get freelancer status report",
+                },
+            }),
+        { revalidateOnFocus: false },
     );
 
     const report = reportData?.result;
@@ -34,8 +34,10 @@ export default function WorkerReportPage() {
                         title="Secretary delivery summary"
                         sx={{ flex: 1 }}
                     >
-                        <Typography>
-                            Secretary condensed the sprint into a freelancer-ready recap so you can see which updates PM will escalate and which ones need a direct reply.
+                        <Typography sx={{ mt: 2 }}>
+                            Secretary condensed the sprint into a
+                            freelancer-ready recap so you can see which updates
+                            PM will escalate and which ones need a direct reply.
                         </Typography>
                     </CustomCard>
                     <CustomCard
@@ -57,13 +59,19 @@ export default function WorkerReportPage() {
                     </CustomCard>
                 </Box>
             </Grid>
-<Grid size={4}>
+            <Grid size={4}>
                 <CustomCard
                     title="PM work checker feedback"
                     sx={{ height: "100%" }}
                 >
                     {isLoading ? (
-                        <Box sx={{ display: "flex", justifyContent: "center", py: 2 }}>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                py: 2,
+                            }}
+                        >
                             <CircularProgress size={24} />
                         </Box>
                     ) : report ? (
@@ -73,23 +81,50 @@ export default function WorkerReportPage() {
                             </Typography>
                             {report.wins && report.wins.length > 0 && (
                                 <Box>
-                                    <Typography sx={{ fontWeight: 600, fontSize: 12 }}>Wins</Typography>
+                                    <Typography
+                                        sx={{ fontWeight: 600, fontSize: 12 }}
+                                    >
+                                        Wins
+                                    </Typography>
                                     {report.wins.map((win, i) => (
-                                        <Typography key={i} sx={{ fontSize: 12 }}>{win}</Typography>
+                                        <Typography
+                                            key={i}
+                                            sx={{ fontSize: 12 }}
+                                        >
+                                            {win}
+                                        </Typography>
                                     ))}
                                 </Box>
                             )}
-                            {report.upcoming_actions && report.upcoming_actions.length > 0 && (
-                                <Box>
-                                    <Typography sx={{ fontWeight: 600, fontSize: 12 }}>Next Actions</Typography>
-                                    {report.upcoming_actions.map((action, i) => (
-                                        <Typography key={i} sx={{ fontSize: 12 }}>{action}</Typography>
-                                    ))}
-                                </Box>
-                            )}
+                            {report.upcoming_actions &&
+                                report.upcoming_actions.length > 0 && (
+                                    <Box>
+                                        <Typography
+                                            sx={{
+                                                fontWeight: 600,
+                                                fontSize: 12,
+                                            }}
+                                        >
+                                            Next Actions
+                                        </Typography>
+                                        {report.upcoming_actions.map(
+                                            (action, i) => (
+                                                <Typography
+                                                    key={i}
+                                                    sx={{ fontSize: 12 }}
+                                                >
+                                                    {action}
+                                                </Typography>
+                                            ),
+                                        )}
+                                    </Box>
+                                )}
                         </Stack>
                     ) : (
-                        <Typography>No feedback yet. Reports will appear after project is created.</Typography>
+                        <Typography sx={{ mt: 2 }}>
+                            No feedback yet. Reports will appear after project
+                            is created.
+                        </Typography>
                     )}
                 </CustomCard>
             </Grid>
@@ -98,8 +133,9 @@ export default function WorkerReportPage() {
                     title="Project owner feedback"
                     sx={{ height: "100%" }}
                 >
-                    <Typography>
-                        The client wants clearer rollout notes and a tighter explanation of what changed since the last PM update.
+                    <Typography sx={{ mt: 2 }}>
+                        The client wants clearer rollout notes and a tighter
+                        explanation of what changed since the last PM update.
                     </Typography>
                 </CustomCard>
             </Grid>

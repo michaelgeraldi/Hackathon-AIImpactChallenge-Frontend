@@ -7,7 +7,7 @@ import TalentProjectsPage from "./_components/TalentProjectsPage";
 export default function TalentHome() {
     const { active } = useNavigationBarContext();
 
-    if (active === "PM Workspace") {
+    if (active === "Talent Projects") {
         return <TalentProjectsPage />;
     } else if (active === "Talent Acquisition") {
         return <TalentHomePage />;

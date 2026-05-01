@@ -7,77 +7,12 @@ import React from "react";
 import ClientProjectForm from "./ClientProjectForm";
 import ClientProjectCard from "./ClientProjectCard";
 import useSWR from "swr";
+import { projects } from "@/app/lib/mockup";
 
 export default function ClientProjectsPage() {
     const { data: backendHealth } = useSWR("/pm/health");
     const [isCreatingProject, setCreatingProject] = React.useState(false);
     const [selectedProjectId, setSelectedProjectId] = React.useState(null);
-
-    const projects = [
-        {
-            id: 1,
-            name: "PM Workspace: Mobile banking refresh",
-            members: [
-                {
-                    name: "Member 1",
-                    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=1",
-                },
-                {
-                    name: "Member 2",
-                    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=2",
-                },
-                {
-                    name: "Member 3",
-                    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=3",
-                },
-            ],
-            progress: 75,
-            status: "Weekly update ready",
-            startDate: "Started on 29 Apr",
-        },
-        {
-            id: 2,
-            name: "PM Workspace: Growth landing page",
-            members: [
-                {
-                    name: "Member 1",
-                    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=1",
-                },
-                {
-                    name: "Member 2",
-                    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=2",
-                },
-                {
-                    name: "Member 3",
-                    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=3",
-                },
-            ],
-            progress: 75,
-            status: "Awaiting review",
-            startDate: "Started on 24 Apr",
-        },
-        {
-            id: 3,
-            name: "PM Workspace: Support automation",
-            members: [
-                {
-                    name: "Member 1",
-                    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=1",
-                },
-                {
-                    name: "Member 2",
-                    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=2",
-                },
-                {
-                    name: "Member 3",
-                    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=3",
-                },
-            ],
-            progress: 75,
-            status: "On track",
-            startDate: "Started on 18 Apr",
-        },
-    ];
 
     return (
         <Container maxWidth="xl" sx={{ py: 4 }}>
