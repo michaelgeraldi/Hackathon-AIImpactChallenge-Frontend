@@ -70,7 +70,7 @@ export default function LoginPage() {
                             mb: 1,
                         }}
                     >
-                        Welcome to Keroyokan
+                        Welcome to Kirjau
                     </Typography>
 
                     {/* Subtitle */}
