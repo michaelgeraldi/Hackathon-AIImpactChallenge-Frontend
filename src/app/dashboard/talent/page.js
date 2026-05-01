@@ -6,13 +6,11 @@ import TalentOverviewPage from "./_components/TalentOverviewPage";
 import WorkerTrackerPage from "./_components/WorkerTrackerPage";
 import WorkerMessagesPage from "./_components/WorkerMessagesPage";
 import TalentReportPage from "./_components/TalentReportPage";
-import { useSearchParams } from "next/navigation";
 import { useProgressIndicator } from "../../_providers/ProgressIndicatorProvider";
 import useProject from "../../_hooks/useProject";
 
 export default function WorkerPage() {
     const { active, setActive } = useNavigationBarContext();
-    const searchParams = useSearchParams();
     // const projectId = searchParams?.get("projectId");
     // const { overview, isLoading } = useProject(projectId);
     // const { startProgress, completeProgress } = useProgressIndicator();

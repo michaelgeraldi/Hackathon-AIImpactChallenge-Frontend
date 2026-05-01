@@ -2,6 +2,7 @@
 
 import { Box, Collapse, Grid, IconButton, Typography } from "@mui/material";
 import * as React from "react";
+import { Suspense } from "react";
 import CustomCard from "../../_components/CustomCard";
 import { useNavigationBarContext } from "../../_components/NavigationBar";
 import useProject from "../../_hooks/useProject";
@@ -16,9 +17,9 @@ import ClientMessagesPage from "./_components/ClientMessagesPage";
 import ClientTrackerPage from "./_components/ClientTrackerPage";
 import { useSearchParams } from "next/navigation";
 
-export default function ClientPage() {
+function ClientPageContent() {
     const { active, setActive } = useNavigationBarContext();
-    const searchParams = useSearchParams()
+    const searchParams = useSearchParams();
     const projectId = searchParams?.get("projectId");
     const { overview } = useProject(projectId);
 
@@ -31,4 +32,12 @@ export default function ClientPage() {
     } else if (active === "Secretary Chat") {
         return <ClientMessagesPage />;
     }
+}
+
+export default function ClientPage() {
+    return (
+        <Suspense fallback={null}>
+            <ClientPageContent />
+        </Suspense>
+    );
 }
