@@ -22,13 +22,13 @@ export default function ClientPage() {
     const projectId = searchParams?.get("projectId");
     const { overview } = useProject(projectId);
 
-    if (active === "Overview") {
+    if (active === "PM Updates") {
         return <ClientOverviewPage data={overview} />;
-    } else if (active === "Tracker") {
+    } else if (active === "PM Tasks") {
         return <ClientTrackerPage />;
-    } else if (active === "Report") {
+    } else if (active === "Secretary Reports") {
         return <ClientReportPage />;
-    } else if (active === "Messages") {
+    } else if (active === "Secretary Chat") {
         return <ClientMessagesPage />;
     }
 }

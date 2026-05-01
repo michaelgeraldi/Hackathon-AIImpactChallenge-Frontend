@@ -14,8 +14,12 @@ import CollapsibleTitle from "../../../_components/CollapsibleTitle";
 import CustomButton from "../../../_components/CustomButton";
 import CustomCard from "../../../_components/CustomCard";
 import CustomChatCard from "../../../_components/CustomChatCard";
+import CollapsibleTitle from "../../../_components/CollapsibleTitle";
+import { useFeedbackContext } from "@/app/_providers/FeedbackProvider";
+import useSWR from "swr";
+import { apiFetcher } from "@/app/lib/api";
+import { getWorkspaceSession } from "@/app/lib/workspace-session";
 
-// Icon imports
 import AddIcon from "@mui/icons-material/Add";
 
 export default function WorkerOverviewPage({ data }) {
@@ -28,47 +32,64 @@ export default function WorkerOverviewPage({ data }) {
                 sx={{ alignItems: "center", justifyContent: "space-between" }}
             >
                 <CollapsibleTitle
-                    title={data?.project_name || ""}
-                    subtitle={data?.description || ""}
+                    title="PM delivery cockpit"
+                    subtitle="Task breakdowns, progress updates, and Secretary-supported communication"
                     defaultExpanded={false}
                 >
                     <Typography>
-                        This is the hidden content that appears when expanded.
+                        PM organizes the work into clear tasks. Secretary turns
+                        meetings and chat threads into concise summaries you can
+                        act on quickly.
                     </Typography>
                 </CollapsibleTitle>
-                <CustomButton startIcon={<AddIcon />}>
-                    Submit Your Work
+                <CustomButton
+                    startIcon={<AddIcon />}
+                    onClick={() =>
+                        showSuccess(
+                            "Submitted to PM work checker. The next step is scope review and feedback from the checker queue.",
+                        )
+                    }
+                >
+                    Submit to PM work checker
                 </CustomButton>
             </Stack>
 
             <Grid container sx={{ mt: 2.5 }} spacing={2.5}>
                 <Grid size={4}>
                     {/* Executive Summary */}
-                    <CustomCard title="Executive Summary">
+                    <CustomCard title="PM weekly focus">
                         <Typography sx={{ mt: 1 }}>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing
-                            elit. Sed do eiusmod tempor incididunt ut labore et
-                            dolore magna aliqua. Ut enim ad minim veniam, quis
-                            nostrud exercitation ullamco laboris nisi ut aliquip
-                            ex ea commodo consequat.
+                            Your PM has prioritized the current sprint around
+                            finishing the homepage, checking quality, and
+                            packaging a clean progress update for the client.
                         </Typography>
                     </CustomCard>
 
-                    {/* Tasks List */}
-                    <CustomCard title="Tasks List" sx={{ mt: 2.5 }}>
+{/* Tasks List */}
+                    <CustomCard title="PM task breakdown" sx={{ mt: 2.5 }}>
                         <Stack sx={{ mt: 1.5, gap: 2 }}>
-                            {DEFAULT_TASKS.map((task) => (
-                                <TaskListItem
-                                    key={task.id}
-                                    title={task.title}
-                                    progress={task.progress}
-                                />
-                            ))}
+                            {timelineLoading ? (
+                                <Box sx={{ display: "flex", justifyContent: "center", py: 2 }}>
+                                    <CircularProgress size={24} />
+                                </Box>
+                            ) : tasks.length === 0 ? (
+                                <Typography sx={{ color: "text.secondary", textAlign: "center" }}>
+                                    No tasks yet. Tasks will appear after PM creates a task breakdown.
+                                </Typography>
+                            ) : (
+tasks.map((task) => (
+                                    <TaskListItem
+                                        key={task.id}
+                                        title={task.title}
+                                        progress={task.progress}
+                                    />
+                                ))
+                            )}
                         </Stack>
                     </CustomCard>
                 </Grid>
                 <Grid size={8}>
-                    <CustomChatCard title="Messages" />
+                    <CustomChatCard title="Secretary chat summary" />
                 </Grid>
             </Grid>
         </Box>
@@ -136,22 +157,22 @@ function TaskListItem({ title, progress }) {
 const DEFAULT_TASKS = [
     {
         id: 1,
-        title: "Design layout mockups",
+        title: "Ship hero section polish",
         progress: 75,
     },
     {
         id: 2,
-        title: "Defining User Experience (UX) Goals and Personas",
+        title: "Break navigation fixes into reviewable subtasks",
         progress: 75,
     },
     {
         id: 3,
-        title: "Designing UI Wireframes",
+        title: "Prepare PM update for work checker",
         progress: 75,
     },
     {
         id: 4,
-        title: "Building Prototypes",
+        title: "Review Secretary summary before client reply",
         progress: 75,
     },
 ];

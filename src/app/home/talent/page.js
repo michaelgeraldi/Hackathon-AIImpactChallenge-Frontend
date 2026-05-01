@@ -1,16 +1,15 @@
 "use client";
 
-import React from "react";
 import { useNavigationBarContext } from "../../_components/NavigationBar";
 import TalentHomePage from "./_components/TalentHomePage";
 import TalentProjectsPage from "./_components/TalentProjectsPage";
 
 export default function TalentHome() {
-    const { active, setActive } = useNavigationBarContext();
+    const { active } = useNavigationBarContext();
 
-    if (active === "Projects") {
-        return <TalentProjectsPage />
-    } else if (active === "Homepage") {
-        return <TalentHomePage />
+    if (active === "PM Workspace") {
+        return <TalentProjectsPage />;
+    } else if (active === "Talent Acquisition") {
+        return <TalentHomePage />;
     }
 }

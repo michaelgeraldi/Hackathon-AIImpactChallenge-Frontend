@@ -25,13 +25,13 @@ export default function WorkerPage() {
         }
     }, [startProgress, completeProgress, isLoading]);
 
-    if (active === "Overview") {
+    if (active === "PM Updates") {
         return <WorkerOverviewPage data={overview} />;
-    } else if (active === "Tracker") {
+    } else if (active === "PM Tasks") {
         return <WorkerTrackerPage />;
-    } else if (active === "Report") {
+    } else if (active === "Secretary Reports") {
         return <WorkerReportPage />;
-    } else if (active === "Messages") {
+    } else if (active === "Secretary Chat") {
         return <WorkerMessagesPage />;
     }
 }

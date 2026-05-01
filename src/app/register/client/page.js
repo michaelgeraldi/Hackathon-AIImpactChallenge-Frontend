@@ -1,9 +1,100 @@
+"use client";
+
+import { Box, Typography, Grid, Paper } from "@mui/material";
 import React from "react";
-import { Box, TextField, Button, Typography, Grid, Paper } from "@mui/material";
 import CustomTextField from "@/app/_components/CustomTextField";
 import CustomButton from "@/app/_components/CustomButton";
+import { useRouter } from "next/navigation";
+import { useFeedbackContext } from "@/app/_providers/FeedbackProvider";
+import useMutation from "@/app/_hooks/useMutation";
+import { mergeWorkspaceSession } from "@/app/lib/workspace-session";
 
 const SignUpPage = () => {
+    const router = useRouter();
+    const { showSuccess, showError } = useFeedbackContext();
+    const { post: bootstrapProject, isLoading: isBootstrapping } = useMutation(
+        "/pm/projects/bootstrap",
+    );
+    const { post: createConversation, isLoading: isCreatingConversation } =
+        useMutation("/secretary/conversations");
+    const [formData, setFormData] = React.useState({
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        projectBrief: "",
+    });
+
+    const isLoading = isBootstrapping || isCreatingConversation;
+
+    const handleInputChange = (field) => (event) => {
+        setFormData((prev) => ({
+            ...prev,
+            [field]: event.target.value,
+        }));
+    };
+
+    const handleCreateWorkspace = async () => {
+        const fullName = `${formData.firstName} ${formData.lastName}`.trim();
+
+        if (!formData.firstName || !formData.email || !formData.projectBrief) {
+            showError(
+                "Add at least a first name, email, and workspace brief before creating the company workspace.",
+            );
+            return;
+        }
+
+        const projectId = crypto.randomUUID();
+
+        try {
+            const bootstrapResponse = await bootstrapProject({
+                overview: {
+                    project_id: projectId,
+                    project_name: `${fullName || "Client"} Workspace`,
+                    client_name: fullName || formData.firstName,
+                    description: formData.projectBrief,
+                    scope: "Talent acquisition intake, PM planning, and secretary support.",
+                    success_criteria: [
+                        "Shortlist relevant talent",
+                        "Create PM-ready project context",
+                        "Enable Secretary summaries",
+                    ],
+                    constraints: [
+                        "Auth is not implemented yet",
+                        "Async collaboration first",
+                    ],
+                    freelancers: [],
+                    milestones: [],
+                    timeline_notes: "Workspace created from frontend signup flow",
+                },
+            });
+
+            const conversationResponse = await createConversation({
+                project_id: projectId,
+                conversation_type: "project_channel",
+                title: `${fullName || formData.firstName} kickoff channel`,
+                participants: [fullName || formData.firstName, "Secretary Agent"],
+            });
+
+            mergeWorkspaceSession({
+                clientName: fullName || formData.firstName,
+                clientEmail: formData.email,
+                currentProjectId: projectId,
+                currentConversationId:
+                    conversationResponse?.conversation?.conversation_id || null,
+                currentProjectOverview:
+                    bootstrapResponse?.snapshot?.overview || null,
+            });
+
+            showSuccess(
+                "Company workspace created through PM bootstrap and Secretary channel setup.",
+            );
+            router.push("/home/client");
+        } catch (error) {
+            showError(error.message || "Failed to create company workspace.");
+        }
+    };
+
     return (
         <Box
             sx={{
@@ -37,7 +128,12 @@ const SignUpPage = () => {
                     }}
                 >
                     <Typography variant="h4" sx={{ fontWeight: 800, mb: 4 }}>
-                        Let&apos;s get started!
+                        Set up your Talent Acquisition brief
+                    </Typography>
+                    <Typography sx={{ color: "text.secondary", mb: 3 }}>
+                        Tell Talent Acquisition who you need. PM and Secretary
+                        will reuse the same project context after the match is
+                        confirmed.
                     </Typography>
 
                     <Grid container spacing={2}>
@@ -48,7 +144,11 @@ const SignUpPage = () => {
                             >
                                 First Name
                             </Typography>
-                            <CustomTextField fullWidth />
+                            <CustomTextField
+                                fullWidth
+                                value={formData.firstName}
+                                onChange={handleInputChange("firstName")}
+                            />
                         </Grid>
                         <Grid size={6}>
                             <Typography
@@ -57,7 +157,11 @@ const SignUpPage = () => {
                             >
                                 Last Name
                             </Typography>
-                            <CustomTextField fullWidth />
+                            <CustomTextField
+                                fullWidth
+                                value={formData.lastName}
+                                onChange={handleInputChange("lastName")}
+                            />
                         </Grid>
                     </Grid>
 
@@ -68,7 +172,11 @@ const SignUpPage = () => {
                         >
                             Email:
                         </Typography>
-                        <CustomTextField fullWidth />
+                        <CustomTextField
+                            fullWidth
+                            value={formData.email}
+                            onChange={handleInputChange("email")}
+                        />
                     </Box>
 
                     <Box sx={{ mt: 3 }}>
@@ -78,11 +186,37 @@ const SignUpPage = () => {
                         >
                             Password:
                         </Typography>
-                        <CustomTextField fullWidth type="password" />
+                        <CustomTextField
+                            fullWidth
+                            type="password"
+                            value={formData.password}
+                            onChange={handleInputChange("password")}
+                        />
                     </Box>
 
-                    <CustomButton sx={{ mt: 10 }}>
-                        Sign up
+                    <Box sx={{ mt: 3 }}>
+                        <Typography
+                            variant="subtitle2"
+                            sx={{ fontWeight: "bold", mb: 1 }}
+                        >
+                            Workspace Brief:
+                        </Typography>
+                        <CustomTextField
+                            fullWidth
+                            multiline
+                            minRows={4}
+                            value={formData.projectBrief}
+                            onChange={handleInputChange("projectBrief")}
+                            placeholder="Describe the project, talent needs, and delivery goals for PM + Secretary."
+                        />
+                    </Box>
+
+                    <CustomButton
+                        sx={{ mt: 10 }}
+                        onClick={handleCreateWorkspace}
+                        disabled={isLoading}
+                    >
+                        {isLoading ? "Creating workspace..." : "Create company workspace"}
                     </CustomButton>
                 </Box>
 
@@ -90,10 +224,21 @@ const SignUpPage = () => {
                 <Box
                     sx={{
                         flex: 1,
-                        backgroundColor: "#d1d1d1", // Placeholder color for the image side
+                        backgroundColor: "#d1d1d1",
                         display: { xs: "none", md: "block" },
+                        p: 6,
                     }}
-                />
+                >
+                    <Typography sx={{ fontSize: 28, fontWeight: 700, mb: 2 }}>
+                        Agent flow
+                    </Typography>
+                    <Typography sx={{ lineHeight: 1.8 }}>
+                        Talent Acquisition handles signup and matchmaking. PM
+                        takes over delivery with updates, task breakdowns, work
+                        checker, and reporting. Secretary captures MoM,
+                        summarizes chats, and drafts response suggestions.
+                    </Typography>
+                </Box>
             </Paper>
         </Box>
     );

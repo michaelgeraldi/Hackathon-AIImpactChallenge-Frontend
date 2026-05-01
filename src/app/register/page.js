@@ -25,17 +25,22 @@ export default function RegisterPage() {
                         fontSize: 32,
                         fontWeight: 600,
                     }}
-                >
-                    I&apos;m here for hiring
-                </Typography>
-                <Stack>
+                    >
+                        Talent Acquisition for companies
+                    </Typography>
+                    <Typography sx={{ maxWidth: 360, textAlign: "center" }}>
+                        Start with Talent Acquisition to define the brief,
+                        shortlist talent, and hand the matched team to PM and
+                        Secretary.
+                    </Typography>
+                    <Stack>
                     <CustomButton
                         variant="outlined"
                         color="secondary"
                         onClick={() => router.push("/register/client")}
-                    >
-                        Sign up as a client
-                    </CustomButton>
+                        >
+                            Sign up as a hiring team
+                        </CustomButton>
                     <Box sx={{ my: 3, textAlign: "center" }}>
                         <Typography sx={{ fontSize: 14 }}>
                             Already have an account?{" "}
@@ -73,11 +78,20 @@ export default function RegisterPage() {
                         fontSize: 32,
                         fontWeight: 600,
                     }}
-                >
-                    I&apos;m here for seeking job
-                </Typography>
-                <Stack>
-                    <CustomButton>Sign up as a talent</CustomButton>
+                    >
+                        Talent Acquisition for talent
+                    </Typography>
+                    <Typography sx={{ maxWidth: 360, textAlign: "center" }}>
+                        Create your talent profile for matchmaking, then work
+                        with PM on delivery while Secretary keeps communication
+                        summarized.
+                    </Typography>
+                    <Stack>
+                        <CustomButton
+                            onClick={() => router.push("/register/talent")}
+                        >
+                            Sign up as talent
+                        </CustomButton>
                     <Box sx={{ my: 3, textAlign: "center" }}>
                         <Typography sx={{ fontSize: 14 }}>
                             Already have an account?{" "}

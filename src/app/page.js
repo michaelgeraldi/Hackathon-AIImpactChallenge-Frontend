@@ -37,7 +37,7 @@ export default function LoginPage() {
 
     return (
         <Container
-            maxWidth="md"
+            maxWidth="lg"
             sx={{
                 display: "flex",
                 justifyContent: "center",
@@ -70,7 +70,7 @@ export default function LoginPage() {
                             mb: 1,
                         }}
                     >
-                        Welcome Back!
+                        Welcome to Keroyokan
                     </Typography>
 
                     {/* Subtitle */}
@@ -81,7 +81,10 @@ export default function LoginPage() {
                             mb: 4,
                         }}
                     >
-                        Let&apos;s get you logged in!
+                        Sign in to the three-agent workspace. Talent
+                        Acquisition handles signup and matchmaking, PM keeps
+                        updates and task breakdowns on track, and Secretary
+                        turns meetings and chats into summaries and suggestions.
                     </Typography>
 
                     {/* Email Field */}
@@ -142,7 +145,7 @@ export default function LoginPage() {
                     {/* Sign Up Link */}
                     <Box sx={{ mb: 3, textAlign: "center", display: "none" }}>
                         <Typography sx={{ fontSize: 14 }}>
-                            Does not have an account?{" "}
+                            Need a new workspace?{" "}
                             <Link
                                 href={"/register"}
                                 sx={{
@@ -154,7 +157,7 @@ export default function LoginPage() {
                                     },
                                 }}
                             >
-                                Sign up
+                                Create an account
                             </Link>
                         </Typography>
                     </Box>
@@ -162,20 +165,20 @@ export default function LoginPage() {
                     {error && <Typography color="error">{error}</Typography>}
 
                     {/* Log In Button */}
-                    <Box sx={{ mt: 6 }}>
+                    <Box sx={{ mt: 8 }}>
                         <CustomButton
-                            sx={{ mb: 2 }}
+                            sx={{ mb: 1.5 }}
                             fullWidth
                             onClick={() => handleLogin("client")}
                         >
-                            Log In as Client
+                            Enter Client Workspace
                         </CustomButton>
                         <CustomButton
                             sx={{ mb: 2 }}
                             fullWidth
                             onClick={() => handleLogin("talent")}
                         >
-                            Log In as Talent
+                            Enter Talent Workspace
                         </CustomButton>
                     </Box>
                 </Grid>
@@ -187,8 +190,24 @@ export default function LoginPage() {
                         borderTopRightRadius: 40,
                         borderBottomRightRadius: 40,
                         backgroundColor: "primary.main",
+                        color: "white",
+                        p: 5,
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        gap: 2,
                     }}
-                ></Grid>
+                >
+                    <Typography sx={{ fontSize: 30, fontWeight: 700 }}>
+                        Three agents, one product loop.
+                    </Typography>
+                    <Typography sx={{ fontSize: 15, lineHeight: 1.8 }}>
+                        Talent Acquisition manages signup and matchmaking. PM
+                        owns updates, timelines, task breakdowns, work checker,
+                        and reporting. Secretary captures MoM, summarizes chats,
+                        and suggests the next response.
+                    </Typography>
+                </Grid>
             </Grid>
         </Container>
     );

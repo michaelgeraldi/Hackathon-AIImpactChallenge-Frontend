@@ -18,6 +18,7 @@ import Logo from "../_components/Logo";
 import NavigationBar, {
     NavigationBarProvider,
 } from "../_components/NavigationBar";
+import useUser from "../_hooks/useUser";
 
 // Icon imports
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
@@ -25,8 +26,9 @@ import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 
 export default function DashboardLayout({ children }) {
-    const router = useRouter();
     const [anchorEl, setAnchorEl] = useState(null);
+    const router = useRouter();
+    const user = useUser();
 
     const handleAvatarClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -45,14 +47,14 @@ export default function DashboardLayout({ children }) {
     };
 
     const open = Boolean(anchorEl);
-    const userType = localStorage.getItem("userType") || null;
+    const userType = user.type;
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
+        const token = user.token;
         if (!token) {
             router.push("/");
         }
-    }, [router]);
+    }, [router, user.token]);
 
     return (
         <NavigationBarProvider>

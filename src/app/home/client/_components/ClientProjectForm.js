@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Grid, Paper, Stack, Typography, Container } from "@mui/material";
+import { Box, Grid, Paper, Stack, Typography } from "@mui/material";
 import { useState } from "react";
 import CustomTextField from "../../../_components/CustomTextField";
 import { useFeedbackContext } from "@/app/_providers/FeedbackProvider";
@@ -13,6 +13,7 @@ import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
 
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import useMutation from "@/app/_hooks/useMutation";
+import { mergeWorkspaceSession } from "@/app/lib/workspace-session";
 
 export default function ClientProjectForm({ onClose }) {
     const [formData, setFormData] = useState({
@@ -74,35 +75,45 @@ export default function ClientProjectForm({ onClose }) {
                 project_id: uuid,
                 project_name: formData.projectName,
                 scope: formData.scope,
-                client_name: "John Doe", // Replace with actual client name
+                client_name: "John Doe",
                 description: formData.description,
                 success_criteria: [
-                    "Launch in 6 weeks",
-                    "Mobile responsive",
-                    "CMS editable",
+                    "Create a PM-ready workspace",
+                    "Match the right delivery roles",
+                    "Keep Secretary summaries connected to the same project",
                 ],
                 constraints: [
-                    "Budget of $10,000",
-                    "Must use React",
-                    "Integrate with Stripe",
+                    "Frontend demo flow without auth",
+                    "Async collaboration first",
+                    "Use the submitted brief as shared project context",
                 ],
-                freelancers: [
-                    {
-                        name: "Dina",
-                        role: "Frontend Engineer",
-                        hours_per_week: 20,
+                freelancers: formData.workers
+                    .filter((worker) => worker.role.trim())
+                    .map((worker) => ({
+                        name: `${worker.role} candidate`,
+                        role: worker.role,
+                        hours_per_week: Number(formData.estimatedHours || 20),
                         timezone: "Asia/Jakarta",
-                        skills: ["Next.js", "Tailwind"],
-                    },
-                ],
-                milestones: [
-                    {
-                        name: "Design freeze",
-                        due_date: "2026-05-15",
-                        success_definition: "Approved UI kit",
-                    },
-                ],
-                timeline_notes: "Client wants weekly updates",
+                        skills: worker.jobDescription
+                            .split(",")
+                            .map((item) => item.trim())
+                            .filter(Boolean),
+                        notes: worker.jobDescription || null,
+                    })),
+                milestones: formData.date
+                    ? [
+                          {
+                              name: "Initial delivery checkpoint",
+                              due_date: formData.date,
+                              success_definition:
+                                  "Client brief translated into a tracked PM plan",
+                          },
+                      ]
+                    : [],
+                timeline_notes:
+                    formData.estimatedHours
+                        ? `Estimated team hours: ${formData.estimatedHours}`
+                        : "Workspace created from frontend PM bootstrap flow",
             };
 
             const result = await post({ overview: body });
@@ -142,7 +153,12 @@ export default function ClientProjectForm({ onClose }) {
                             mb: 4,
                         }}
                     >
-                        Create New Project
+                        Bootstrap PM workspace
+                    </Typography>
+                    <Typography sx={{ mb: 4, color: "text.secondary" }}>
+                        Share the brief once. PM uses it to set up delivery, and
+                        Secretary uses the same context for meeting notes and
+                        summaries.
                     </Typography>
                     {/* Project Name & Description */}
                     <Grid container spacing={3} sx={{ mb: 4 }}>
@@ -158,7 +174,7 @@ export default function ClientProjectForm({ onClose }) {
                                     name="projectName"
                                     value={formData.projectName}
                                     onChange={handleInputChange}
-                                    placeholder="Enter project name"
+                                    placeholder="Enter PM workspace name"
                                 />
                             </Stack>
                         </Grid>
@@ -174,7 +190,7 @@ export default function ClientProjectForm({ onClose }) {
                                     name="scope"
                                     value={formData.scope}
                                     onChange={handleInputChange}
-                                    placeholder="Enter project scope"
+                                    placeholder="What delivery scope should PM own?"
                                 />
                             </Stack>
                         </Grid>
@@ -190,7 +206,7 @@ export default function ClientProjectForm({ onClose }) {
                                     name="description"
                                     value={formData.description}
                                     onChange={handleInputChange}
-                                    placeholder="Enter description"
+                                    placeholder="Describe the goals, context, and success criteria"
                                     multiline
                                     rows={4}
                                 />
@@ -228,7 +244,7 @@ export default function ClientProjectForm({ onClose }) {
                                     type="number"
                                     value={formData.estimatedHours}
                                     onChange={handleInputChange}
-                                    placeholder="Enter estimated hours"
+                                    placeholder="Estimated team hours"
                                 />
                             </Stack>
                         </Grid>
@@ -236,14 +252,14 @@ export default function ClientProjectForm({ onClose }) {
                     {/* Workers Section */}
                     <Stack sx={{ mb: 4, gap: 2 }}>
                         <Typography sx={{ fontWeight: 600, fontSize: 16 }}>
-                            Workers
+                            Talent roles
                         </Typography>
                         {formData.workers.map((worker, index) => (
                             <Grid container spacing={2} key={index}>
                                 <Grid size={5.5}>
                                     <CustomTextField
                                         fullWidth
-                                        placeholder="Role of worker"
+                                        placeholder="Role to match"
                                         value={worker.role}
                                         onChange={(e) =>
                                             handleWorkerChange(
@@ -257,7 +273,7 @@ export default function ClientProjectForm({ onClose }) {
                                 <Grid size={5.5}>
                                     <CustomTextField
                                         fullWidth
-                                        placeholder="Job description"
+                                        placeholder="Matchmaking notes"
                                         value={worker.jobDescription}
                                         onChange={(e) =>
                                             handleWorkerChange(
@@ -293,14 +309,14 @@ export default function ClientProjectForm({ onClose }) {
                                 variant="outlined"
                                 onClick={handleAddWorker}
                             >
-                                Add Talent
+                                Add role
                             </CustomButton>
                         </Box>
                     </Stack>
                     {/* File Brief Section */}
                     <Stack sx={{ mb: 4, gap: 2 }}>
                         <Typography sx={{ fontWeight: 600, fontSize: 16 }}>
-                            File brief
+                            Brief upload
                         </Typography>
                         <Box
                             sx={{
@@ -334,7 +350,7 @@ export default function ClientProjectForm({ onClose }) {
                                     color: "text.secondary",
                                 }}
                             >
-                                Upload
+                                Upload brief for PM and Secretary
                             </Typography>
                         </Box>
                     </Stack>
