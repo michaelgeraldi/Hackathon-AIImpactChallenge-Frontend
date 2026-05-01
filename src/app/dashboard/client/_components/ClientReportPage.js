@@ -2,7 +2,15 @@
 
 import CustomButton from "@/app/_components/CustomButton";
 import CustomIconButton from "@/app/_components/CustomIconButton";
-import { Avatar, Box, Grid, Paper, Stack, Typography, CircularProgress } from "@mui/material";
+import {
+    Avatar,
+    Box,
+    Grid,
+    Paper,
+    Stack,
+    Typography,
+    CircularProgress,
+} from "@mui/material";
 import CustomCard from "../../../_components/CustomCard";
 import CustomChatCard from "../../../_components/CustomChatCard";
 import { useFeedbackContext } from "@/app/_providers/FeedbackProvider";
@@ -18,18 +26,23 @@ export default function ClientReportPage() {
     const session = getWorkspaceSession();
     const projectId = session.project_id;
 
-    const { data: reportData, isLoading, error } = useSWR(
+    const {
+        data: reportData,
+        isLoading,
+        error,
+    } = useSWR(
         projectId ? ["/pm/reports", projectId] : null,
-        ([url, pid]) => apiFetcher(url, {
-            method: "POST",
-            body: {
-                project_id: pid,
-                cadence: "weekly",
-                days_since_last_report: 7,
-                requester_notes: "Get project status report",
-            },
-        }),
-        { revalidateOnFocus: false }
+        ([url, pid]) =>
+            apiFetcher(url, {
+                method: "POST",
+                body: {
+                    project_id: pid,
+                    cadence: "weekly",
+                    days_since_last_report: 7,
+                    requester_notes: "Get project status report",
+                },
+            }),
+        { revalidateOnFocus: false },
     );
 
     const report = reportData?.result;
@@ -38,10 +51,16 @@ export default function ClientReportPage() {
     return (
         <Grid container sx={{ mt: 2.5 }} spacing={2.5}>
             <Grid size={7}>
-{/* Executive Summary */}
+                {/* Executive Summary */}
                 <CustomCard title="PM Executive Summary">
                     {isLoading ? (
-                        <Box sx={{ display: "flex", justifyContent: "center", py: 2 }}>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                py: 2,
+                            }}
+                        >
                             <CircularProgress size={24} />
                         </Box>
                     ) : report ? (
@@ -50,7 +69,8 @@ export default function ClientReportPage() {
                         </Typography>
                     ) : (
                         <Typography>
-                            No report available. Create a project and generate a report to see data here.
+                            No report available. Create a project and generate a
+                            report to see data here.
                         </Typography>
                     )}
                 </CustomCard>
@@ -200,9 +220,26 @@ export default function ClientReportPage() {
                             title="Secretary live feed"
                             subtitle="MoM, summaries, and response suggestions prepared for this workspace"
                         >
-                            <Stack sx={{ mt: 3, gap: 5 }}>
-                                <AiReportItem onReview={() => showInfo("Secretary highlighted this update as ready for a client-facing review.")} />
-                                <AiReportItem onReview={() => showInfo("Secretary suggested turning this summary into a PM escalation before sending it out.")} />
+                            <Stack
+                                sx={{
+                                    mt: 3,
+                                    gap: 5,
+                                }}
+                            >
+                                <AiReportItem
+                                    onReview={() =>
+                                        showInfo(
+                                            "Secretary highlighted this update as ready for a client-facing review.",
+                                        )
+                                    }
+                                />
+                                <AiReportItem
+                                    onReview={() =>
+                                        showInfo(
+                                            "Secretary suggested turning this summary into a PM escalation before sending it out.",
+                                        )
+                                    }
+                                />
                             </Stack>
                         </CustomCard>
                     </Grid>
@@ -239,7 +276,7 @@ export default function ClientReportPage() {
 function AiReportItem({ onReview }) {
     return (
         <Box>
-            <Typography sx={{ fontWeight: 500 }}>
+            <Typography sx={{ fontWeight: 400 }}>
                 Secretary summarized the latest standup, extracted the PM risk
                 list, and drafted a client-facing update so the team can reply
                 faster.

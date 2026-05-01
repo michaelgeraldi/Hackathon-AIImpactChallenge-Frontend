@@ -101,7 +101,7 @@ export default function ClientOverviewPage({ data }) {
                     <CustomButton
                         startIcon={<AddIcon />}
                         fullWidth
-                        onClick={() => setCreatingProject(true)}
+                        // onClick={() => setCreatingProject(true)}
                     >
                         Create PM task
                     </CustomButton>

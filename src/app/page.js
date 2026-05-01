@@ -37,7 +37,7 @@ export default function LoginPage() {
 
     return (
         <Container
-            maxWidth="lg"
+            maxWidth="md"
             sx={{
                 display: "flex",
                 justifyContent: "center",
@@ -165,7 +165,7 @@ export default function LoginPage() {
                     {error && <Typography color="error">{error}</Typography>}
 
                     {/* Log In Button */}
-                    <Box sx={{ mt: 8 }}>
+                    <Box sx={{ mt: 5 }}>
                         <CustomButton
                             sx={{ mb: 1.5 }}
                             fullWidth

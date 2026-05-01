@@ -1,25 +1,22 @@
 "use client";
 
+import CustomButton from "@/app/_components/CustomButton";
+import useProject from "@/app/_hooks/useProject";
 import {
+    Avatar,
+    AvatarGroup,
     Box,
+    CircularProgress,
+    Grid,
     Paper,
     Stack,
     Typography,
-    AvatarGroup,
-    Avatar,
-    CircularProgress,
-    Grid,
 } from "@mui/material";
-import CustomButton from "@/app/_components/CustomButton";
 import { useRouter } from "next/navigation";
-import useProject from "@/app/_hooks/useProject";
-import { useEffect } from "react";
-import { useProgressIndicator } from "@/app/_providers/ProgressIndicatorProvider";
 
 export default function ProjectCard({ project, isSelected = false, onClick }) {
-    const context = useProject(project.id);
+    // const { id, overview, isLoading } = useProject(project.id);
     const router = useRouter();
-    const { startProgress, completeProgress } = useProgressIndicator();
 
     return (
         <Paper
@@ -51,7 +48,7 @@ export default function ProjectCard({ project, isSelected = false, onClick }) {
                             fontSize: 16,
                         }}
                     >
-                        {context?.overview?.project_name || "Loading data..."}
+                        {project?.name}
                     </Typography>
                 </Grid>
 
@@ -169,9 +166,7 @@ export default function ProjectCard({ project, isSelected = false, onClick }) {
                         fullWidth
                         variant="outlined"
                         onClick={() =>
-                            router.push(
-                                "/dashboard/client?projectId=" + context?.id,
-                            )
+                            router.push("/dashboard/client?projectId=" + project.id)
                         }
                     >
                         Dashboard

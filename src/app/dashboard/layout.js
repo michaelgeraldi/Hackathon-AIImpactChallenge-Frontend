@@ -28,7 +28,7 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 export default function DashboardLayout({ children }) {
     const [anchorEl, setAnchorEl] = useState(null);
     const router = useRouter();
-    const user = useUser();
+    // const user = useUser();
 
     const handleAvatarClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -47,14 +47,14 @@ export default function DashboardLayout({ children }) {
     };
 
     const open = Boolean(anchorEl);
-    const userType = user.type;
+    const userType = localStorage.getItem("userType");
 
     useEffect(() => {
-        const token = user.token;
+        const token = localStorage.getItem("token");
         if (!token) {
             router.push("/");
         }
-    }, [router, user.token]);
+    }, [router]);
 
     return (
         <NavigationBarProvider>
