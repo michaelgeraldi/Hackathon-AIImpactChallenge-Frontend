@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Box, Grid, Modal, Stack, Typography, Select, MenuItem } from "@mui/material";
+import { Box, Grid, Modal, Stack, Typography, Select, MenuItem, CircularProgress } from "@mui/material";
 import CustomBarChart from "../../../_components/CustomBarChart";
 import CustomButton from "../../../_components/CustomButton";
 import CustomCard from "../../../_components/CustomCard";
@@ -23,8 +23,13 @@ export default function ClientOverviewPage({ data }) {
     const [isCreatingProject, setCreatingProject] = React.useState(false);
     const [isGeneratingTasks, setGeneratingTasks] = React.useState(false);
     const [isGeneratingTimeline, setGeneratingTimeline] = React.useState(false);
+    const [mounted, setMounted] = React.useState(false);
     const activitySectionHook = useActivitySection();
     const { showInfo, showSuccess, showError } = useFeedbackContext();
+
+    React.useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const session = getWorkspaceSession();
     const projects = getProjectList();
@@ -32,11 +37,18 @@ export default function ClientOverviewPage({ data }) {
     const currentProjectName = session.project_name || "Select Project";
 
     React.useEffect(() => {
-        if (!projectId && projects.length > 0) {
+        if (mounted && !projectId && projects.length > 0) {
             setActiveProject(projects[0].project_id);
-            window.location.reload();
         }
-    }, []);
+    }, [mounted, projects, projectId]);
+
+    if (!mounted) {
+        return (
+            <Box sx={{ display: "flex", justifyContent: "center", py: 10 }}>
+                <CircularProgress />
+            </Box>
+        );
+    }
 
     const { data: contextData, isLoading: contextLoading, mutate: mutateContext } = useSWR(
         projectId ? `/pm/projects/${projectId}/context` : null,
