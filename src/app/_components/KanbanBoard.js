@@ -14,7 +14,7 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
-export default function KanbanBoard({ columns }) {
+export default function KanbanBoard({ columns, onTaskClick, showSubmitHint }) {
     return (
         <Paper elevation={1} sx={{ borderRadius: 5 }}>
             <Stack
@@ -99,7 +99,14 @@ export default function KanbanBoard({ columns }) {
                                     backgroundColor: "white",
                                     border: "1px solid #e0e0e0",
                                     borderRadius: 2,
+                                    cursor: onTaskClick ? "pointer" : "default",
+                                    transition: "all 0.2s",
+                                    "&:hover": onTaskClick ? {
+                                        borderColor: "#5B63FF",
+                                        boxShadow: "0 4px 12px rgba(91, 99, 255, 0.15)",
+                                    } : {},
                                 }}
+                                onClick={() => onTaskClick && onTaskClick(task, column.id)}
                             >
                                 <CardContent sx={{ p: 2 }}>
                                     <Stack sx={{ gap: 1.5 }}>

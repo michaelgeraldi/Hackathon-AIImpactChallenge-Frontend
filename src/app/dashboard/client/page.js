@@ -8,11 +8,10 @@ import { useNavigationBarContext } from "../../_components/NavigationBar";
 import useProject from "../../_hooks/useProject";
 import { getWorkspaceSession } from "../../lib/workspace-session";
 
-// Pages imports
 import ClientOverviewPage from "./_components/ClientOverviewPage";
 import ClientReportPage from "./_components/ClientReportPage";
+import ClientWeeklyUpdatesPage from "./_components/ClientWeeklyUpdatesPage";
 
-// Icon imports
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ClientMessagesPage from "./_components/ClientMessagesPage";
 import ClientTrackerPage from "./_components/ClientTrackerPage";
@@ -27,6 +26,8 @@ function ClientPageContent() {
         return <ClientOverviewPage data={overview} />;
     } else if (active === "Task Board") {
         return <ClientTrackerPage />;
+    } else if (active === "Weekly Updates") {
+        return <ClientWeeklyUpdatesPage />;
     } else if (active === "Meeting Notes") {
         return <ClientReportPage />;
     } else if (active === "Team Chat") {

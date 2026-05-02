@@ -8,6 +8,7 @@ import { Box, Typography, Badge, Paper } from "@mui/material";
 const defaultTabs = [
     { label: "Project Overview" },
     { label: "Task Board" },
+    { label: "Weekly Updates" },
     { label: "Meeting Notes" },
     { label: "Team Chat", badge: 3 },
 ];

@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { Box, Typography, CircularProgress } from "@mui/material";
 import ActivitySection, {
     useActivitySection,
@@ -7,15 +8,21 @@ import ActivitySection, {
 
 import CustomCard from "@/app/_components/CustomCard";
 import KanbanBoard from "@/app/_components/KanbanBoard";
+import WorkSubmissionForm from "./WorkSubmissionForm";
 import useSWR from "swr";
 import { apiFetcher } from "@/app/lib/api";
 import { getWorkspaceSession } from "@/app/lib/workspace-session";
+import { useFeedbackContext } from "@/app/_providers/FeedbackProvider";
 
 export default function WorkerTrackerPage() {
     const activitySectionHook = useActivitySection();
+    const { showInfo } = useFeedbackContext();
 
     const session = getWorkspaceSession();
     const projectId = session.project_id;
+
+    const [selectedTask, setSelectedTask] = React.useState(null);
+    const [showSubmissionForm, setShowSubmissionForm] = React.useState(false);
 
     const { data: timelineData, isLoading } = useSWR(
         projectId ? `/pm/projects/${projectId}/timeline` : null,
@@ -32,6 +39,19 @@ export default function WorkerTrackerPage() {
             case "completed": return "completed";
             case "blocked": return "review";
             default: return "todo";
+        }
+    };
+
+    const handleTaskClick = (task, columnId) => {
+        if (columnId === "inprogress") {
+            setSelectedTask(task);
+            setShowSubmissionForm(true);
+        } else if (columnId === "todo") {
+            showInfo("Start working on this task to submit it for review");
+        } else if (columnId === "completed") {
+            showInfo("This task is already completed");
+        } else if (columnId === "review") {
+            showInfo("This task is under review by PM");
         }
     };
 
@@ -65,17 +85,12 @@ export default function WorkerTrackerPage() {
 return (
         <Box sx={{ minHeight: "100vh" }}>
             <Typography sx={{ mb: 2, fontWeight: 700, fontSize: 22 }}>
-                PM delivery board
+                My Tasks
             </Typography>
             <Typography sx={{ mb: 3, color: "text.secondary" }}>
-                Keep your assigned tasks, review rounds, and Secretary follow-ups visible while you deliver.
+                Click on any task in "In Progress" to submit your work for review.
             </Typography>
-            {/* Activity Section */}
-            <CustomCard sx={{ mb: 3 }}>
-                <ActivitySection {...activitySectionHook} />
-            </CustomCard>
 
-            {/* Kanban Board */}
             {isLoading ? (
                 <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
                     <CircularProgress />
@@ -87,8 +102,22 @@ return (
                     </Typography>
                 </CustomCard>
             ) : (
-                <KanbanBoard columns={kanbanColumns} />
+                <KanbanBoard 
+                    columns={kanbanColumns} 
+                    onTaskClick={handleTaskClick}
+                    showSubmitHint={true}
+                />
             )}
+
+            <WorkSubmissionForm
+                open={showSubmissionForm}
+                onClose={() => {
+                    setShowSubmissionForm(false);
+                    setSelectedTask(null);
+                }}
+                task={selectedTask}
+                projectId={projectId}
+            />
         </Box>
     );
 }
