@@ -20,21 +20,20 @@ import { apiFetcher } from "@/app/lib/api";
 import { getWorkspaceSession, getProjectList, setActiveProject } from "@/app/lib/workspace-session";
 
 export default function ClientOverviewPage({ data }) {
+    const [mounted, setMounted] = React.useState(false);
     const [isCreatingProject, setCreatingProject] = React.useState(false);
     const [isGeneratingTasks, setGeneratingTasks] = React.useState(false);
     const [isGeneratingTimeline, setGeneratingTimeline] = React.useState(false);
-    const [mounted, setMounted] = React.useState(false);
-    const activitySectionHook = useActivitySection();
+
     const { showInfo, showSuccess, showError } = useFeedbackContext();
+    const activitySectionHook = useActivitySection();
+    const session = getWorkspaceSession();
+    const projects = getProjectList();
+    let projectId = session.project_id;
 
     React.useEffect(() => {
         setMounted(true);
     }, []);
-
-    const session = getWorkspaceSession();
-    const projects = getProjectList();
-    let projectId = session.project_id;
-    const currentProjectName = session.project_name || "Select Project";
 
     React.useEffect(() => {
         if (mounted && !projectId && projects.length > 0) {
@@ -49,6 +48,8 @@ export default function ClientOverviewPage({ data }) {
             </Box>
         );
     }
+
+    const currentProjectName = session.project_name || "Select Project";
 
     const { data: contextData, isLoading: contextLoading, mutate: mutateContext } = useSWR(
         projectId ? `/pm/projects/${projectId}/context` : null,
