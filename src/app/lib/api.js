@@ -1,5 +1,4 @@
-const DEFAULT_API_URL =
-    "https://keroyokan-func-bde6ekdtcvhjb3ar.indonesiacentral-01.azurewebsites.net";
+const DEFAULT_API_URL = "http://127.0.0.1:8000";
 const API_PREFIX = "/api/v1";
 
 function getApiBaseUrl() {

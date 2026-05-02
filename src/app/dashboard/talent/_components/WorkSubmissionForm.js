@@ -14,7 +14,7 @@ import CustomButton from "@/app/_components/CustomButton";
 import { useFeedbackContext } from "@/app/_providers/FeedbackProvider";
 import { apiFetcher } from "@/app/lib/api";
 
-export default function WorkSubmissionForm({ open, onClose, task, projectId }) {
+export default function WorkSubmissionForm({ open, onClose, task, projectId, onSuccess }) {
     const [submitting, setSubmitting] = React.useState(false);
     const { showSuccess, showError } = useFeedbackContext();
 
@@ -32,7 +32,7 @@ export default function WorkSubmissionForm({ open, onClose, task, projectId }) {
 
         setSubmitting(true);
         try {
-            const response = await apiFetcher("/pm/work-check", {
+            await apiFetcher("/pm/work-check", {
                 method: "POST",
                 body: {
                     project_id: projectId,
@@ -46,8 +46,17 @@ export default function WorkSubmissionForm({ open, onClose, task, projectId }) {
                 },
             });
 
-            showSuccess("Work submitted for review! The PM will check your submission.");
+            await apiFetcher(`/pm/projects/${projectId}/tasks/${task?.id}/status`, {
+                method: "POST",
+                body: {
+                    status: "blocked",
+                    notes: "Submitted for PM review",
+                },
+            });
+
+            showSuccess("Work submitted! Task moved to Under Review.");
             onClose();
+            if (onSuccess) onSuccess();
             setFormData({
                 deliverable_summary: "",
                 deliverable_artifact: "",
