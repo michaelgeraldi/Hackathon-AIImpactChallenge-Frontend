@@ -171,6 +171,12 @@ export default function ClientOverviewPage({ data }) {
 
             <Box sx={{ borderBottom: '2px solid', borderColor: 'divider', mb: 3 }} />
 
+            <Stack direction="row" spacing={2} sx={{ mb: 3, justifyContent: "flex-end" }}>
+                <CustomButton startIcon={<AddIcon />} onClick={generateTaskBreakdown} loading={isGeneratingTasks}>Create Tasks from Brief</CustomButton>
+                <CustomButton startIcon={<AddIcon />} onClick={generateTimeline} loading={isGeneratingTimeline}>Create Schedule</CustomButton>
+                <CustomButton variant="outlined" onClick={() => setCreatingProject(true)}>New Project</CustomButton>
+            </Stack>
+
             {!projectId ? (
                 <Box sx={{ mt: 4, textAlign: "center" }}>
                     <Typography sx={{ mb: 3, color: "text.secondary" }}>
@@ -187,59 +193,40 @@ export default function ClientOverviewPage({ data }) {
                 </Box>
             ) : (
                 <>
-                    <Stack sx={{ mt: 3 }} direction="row" spacing={2.5}>
-                        <Grid container spacing={2.5} sx={{ flex: 1 }}>
-                            <StatisticsCard title="Team Members" value={matchedTalent.toString().padStart(2, "0")} />
-                            <StatisticsCard title="Tasks Done" value={`${tasksClosed}%`} />
-                            <StatisticsCard title="Pending Review" value={workCheckerQueue.toString().padStart(2, "0")} />
-                            <StatisticsCard title="Meeting Notes" value={secretaryNotes.toString().padStart(2, "0")} />
+                    <Grid container spacing={2.5} sx={{ mt: 1 }}>
+                        <Grid size={3}>
+                            <Box sx={{ backgroundColor: "background.paper", p: 3, borderRadius: 4, border: "1px solid", borderColor: "divider" }}>
+                                <Typography sx={{ fontSize: 12, color: "text.secondary", mb: 1 }}>Team Members</Typography>
+                                <Typography sx={{ fontSize: 28, fontWeight: 700 }}>{matchedTalent.toString().padStart(2, "0")}</Typography>
+                            </Box>
                         </Grid>
+                        <Grid size={3}>
+                            <Box sx={{ backgroundColor: "background.paper", p: 3, borderRadius: 4, border: "1px solid", borderColor: "divider" }}>
+                                <Typography sx={{ fontSize: 12, color: "text.secondary", mb: 1 }}>Tasks Done</Typography>
+                                <Typography sx={{ fontSize: 28, fontWeight: 700 }}>{tasksClosed}%</Typography>
+                            </Box>
+                        </Grid>
+                        <Grid size={3}>
+                            <Box sx={{ backgroundColor: "background.paper", p: 3, borderRadius: 4, border: "1px solid", borderColor: "divider" }}>
+                                <Typography sx={{ fontSize: 12, color: "text.secondary", mb: 1 }}>Pending Review</Typography>
+                                <Typography sx={{ fontSize: 28, fontWeight: 700 }}>{workCheckerQueue.toString().padStart(2, "0")}</Typography>
+                            </Box>
+                        </Grid>
+                        <Grid size={3}>
+                            <Box sx={{ backgroundColor: "background.paper", p: 3, borderRadius: 4, border: "1px solid", borderColor: "divider" }}>
+                                <Typography sx={{ fontSize: 12, color: "text.secondary", mb: 1 }}>Meeting Notes</Typography>
+                                <Typography sx={{ fontSize: 28, fontWeight: 700 }}>{secretaryNotes.toString().padStart(2, "0")}</Typography>
+                            </Box>
+                        </Grid>
+                    </Grid>
 
-                        <Stack
-                            spacing={2}
-                            sx={{
-                                mt: 3,
-                                alignItems: "center",
-                                justifyContent: "center",
-                            }}
-                        >
-                            <CustomButton
-                                startIcon={<AddIcon />}
-                                fullWidth
-                                onClick={generateTaskBreakdown}
-                                loading={isGeneratingTasks}
-                            >
-                                Create Tasks from Brief
-                            </CustomButton>
-                            <CustomButton
-                                startIcon={<AddIcon />}
-                                fullWidth
-                                onClick={generateTimeline}
-                                loading={isGeneratingTimeline}
-                            >
-                                Create Schedule
-                            </CustomButton>
-                            <CustomButton
-                                variant="outlined"
-                                fullWidth
-                                onClick={() => setCreatingProject(true)}
-                            >
-                                New Project
-                            </CustomButton>
-                        </Stack>
-                    </Stack>
-
-                    <Grid container sx={{ mt: 2.5 }} spacing={2.5}>
+                    <Grid container spacing={2.5} sx={{ mt: 2.5 }}>
                         <Grid size={3}>
                             <CustomCard title="PM timeline">
-                                <Box sx={{ mt: 1.5 }}>
-                                    <CustomBarChart />
-                                </Box>
+                                <Box sx={{ mt: 1.5 }}><CustomBarChart /></Box>
                             </CustomCard>
                             <CustomCard title="PM work checker" sx={{ mt: 2.5 }}>
-                                <Box sx={{ mt: 1.5 }}>
-                                    <CustomDonutChart />
-                                </Box>
+                                <Box sx={{ mt: 1.5 }}><CustomDonutChart /></Box>
                             </CustomCard>
                         </Grid>
                         <Grid size={4.5}>
@@ -254,33 +241,9 @@ export default function ClientOverviewPage({ data }) {
                 </>
             )}
 
-            <Modal
-                open={isCreatingProject}
-                onClose={() => setCreatingProject(false)}
-            >
+            <Modal open={isCreatingProject} onClose={() => setCreatingProject(false)}>
                 <ClientProjectForm onClose={() => setCreatingProject(false)} />
             </Modal>
-        </Box>
-    );
-}
-
-function StatisticsCard({ title, value }) {
-    return (
-        <Box
-            sx={{
-                backgroundColor: "background.paper",
-                p: 3,
-                borderRadius: 4,
-                border: "1px solid",
-                borderColor: "divider",
-            }}
-        >
-            <Typography sx={{ fontSize: 12, color: "text.secondary", mb: 1 }}>
-                {title}
-            </Typography>
-            <Typography sx={{ fontSize: 28, fontWeight: 700 }}>
-                {value}
-            </Typography>
         </Box>
     );
 }
