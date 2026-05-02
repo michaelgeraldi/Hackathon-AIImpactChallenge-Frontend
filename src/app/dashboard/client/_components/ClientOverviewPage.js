@@ -31,6 +31,28 @@ export default function ClientOverviewPage({ data }) {
     const projects = getProjectList();
     let projectId = session.project_id;
 
+    const contextKey = projectId ? `/pm/projects/${projectId}/context` : "/pm/projects/placeholder/context";
+    const timelineKey = projectId ? `/pm/projects/${projectId}/timeline` : "/pm/projects/placeholder/timeline";
+    const eventsKey = projectId ? `/pm/projects/${projectId}/events` : "/pm/projects/placeholder/events";
+
+    const { data: contextData, isLoading: contextLoading, mutate: mutateContext } = useSWR(
+        contextKey,
+        (url) => url.includes("placeholder") ? Promise.resolve(null) : apiFetcher(url),
+        { revalidateOnFocus: false, dedupingInterval: 0 }
+    );
+
+    const { data: timelineData, isLoading: timelineLoading, mutate: mutateTimeline } = useSWR(
+        timelineKey,
+        (url) => url.includes("placeholder") ? Promise.resolve(null) : apiFetcher(url),
+        { revalidateOnFocus: false, dedupingInterval: 0 }
+    );
+
+    const { data: eventsData } = useSWR(
+        eventsKey,
+        (url) => url.includes("placeholder") ? Promise.resolve(null) : apiFetcher(url),
+        { revalidateOnFocus: false, dedupingInterval: 0 }
+    );
+
     React.useEffect(() => {
         setMounted(true);
     }, []);
@@ -41,6 +63,13 @@ export default function ClientOverviewPage({ data }) {
         }
     }, [mounted, projects, projectId]);
 
+    React.useEffect(() => {
+        if (projectId && contextData) {
+            mutateContext();
+            mutateTimeline();
+        }
+    }, [projectId, mutateContext, mutateTimeline]);
+
     if (!mounted) {
         return (
             <Box sx={{ display: "flex", justifyContent: "center", py: 10 }}>
@@ -50,25 +79,6 @@ export default function ClientOverviewPage({ data }) {
     }
 
     const currentProjectName = session.project_name || "Select Project";
-
-    const { data: contextData, isLoading: contextLoading, mutate: mutateContext } = useSWR(
-        projectId ? `/pm/projects/${projectId}/context` : null,
-        (url) => apiFetcher(url),
-        { revalidateOnFocus: false }
-    );
-
-    const { data: timelineData, isLoading: timelineLoading, mutate: mutateTimeline } = useSWR(
-        projectId ? `/pm/projects/${projectId}/timeline` : null,
-        (url) => apiFetcher(url),
-        { revalidateOnFocus: false }
-    );
-
-    const { data: eventsData } = useSWR(
-        projectId ? `/pm/projects/${projectId}/events` : null,
-        (url) => apiFetcher(url),
-        { revalidateOnFocus: false }
-    );
-
     const projectOverview = contextData?.snapshot?.overview;
     const timelineEntries = timelineData?.timeline?.entries || [];
     const events = eventsData?.events || [];
@@ -79,13 +89,6 @@ export default function ClientOverviewPage({ data }) {
     const tasksClosed = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
     const workCheckerQueue = events.filter(e => e.event_type === "work_check" && !e.resolved).length;
     const secretaryNotes = contextData?.snapshot?.recent_entries?.length || 0;
-
-    React.useEffect(() => {
-        if (projectId && contextData) {
-            mutateContext();
-            mutateTimeline();
-        }
-    }, [projectId, mutateContext, mutateTimeline]);
 
     const generateTaskBreakdown = async () => {
         if (!projectId || !projectOverview) {
@@ -263,19 +266,21 @@ export default function ClientOverviewPage({ data }) {
 
 function StatisticsCard({ title, value }) {
     return (
-        <Grid size={3}>
-            <CustomCard
-                sx={{
-                    borderRadius: 5,
-                    textAlign: "center",
-                }}
-                elevation={0}
-            >
-                <Typography sx={{ fontWeight: 600 }}>{title}</Typography>
-                <Typography sx={{ fontSize: 40, fontWeight: 600 }}>
-                    {value}
-                </Typography>
-            </CustomCard>
-        </Grid>
+        <Box
+            sx={{
+                backgroundColor: "background.paper",
+                p: 3,
+                borderRadius: 4,
+                border: "1px solid",
+                borderColor: "divider",
+            }}
+        >
+            <Typography sx={{ fontSize: 12, color: "text.secondary", mb: 1 }}>
+                {title}
+            </Typography>
+            <Typography sx={{ fontSize: 28, fontWeight: 700 }}>
+                {value}
+            </Typography>
+        </Box>
     );
 }
