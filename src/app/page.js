@@ -73,7 +73,7 @@ export default function LoginPage() {
                         Welcome to Kirjau
                     </Typography>
 
-                    {/* Subtitle */}
+                    {/* Subtitle - User-friendly description */}
                     <Typography
                         sx={{
                             fontSize: 14,
@@ -81,13 +81,10 @@ export default function LoginPage() {
                             mb: 4,
                         }}
                     >
-                        Sign in to the three-agent workspace. Talent
-                        Acquisition handles signup and matchmaking, PM keeps
-                        updates and task breakdowns on track, and Secretary
-                        turns meetings and chats into summaries and suggestions.
+                        Your AI-powered workspace for managing freelance projects.
+                        Track tasks, collaborate with your team, and get things done.
                     </Typography>
 
-                    {/* Email Field */}
                     <Stack sx={{ mb: 3 }}>
                         <Typography
                             sx={{
@@ -105,7 +102,6 @@ export default function LoginPage() {
                         />
                     </Stack>
 
-                    {/* Password Field */}
                     <Stack sx={{ mb: 2 }}>
                         <Typography
                             sx={{
@@ -124,63 +120,30 @@ export default function LoginPage() {
                         />
                     </Stack>
 
-                    {/* Forgot Password Link */}
-                    <Box sx={{ textAlign: "right", mb: 4, display: "none" }}>
-                        <Link
-                            href="#"
-                            sx={{
-                                fontSize: 14,
-                                fontWeight: 600,
-                                color: "inherit",
-                                textDecoration: "none",
-                                "&:hover": {
-                                    textDecoration: "underline",
-                                },
-                            }}
-                        >
-                            Forgot Password?
-                        </Link>
-                    </Box>
-
-                    {/* Sign Up Link */}
-                    <Box sx={{ mb: 3, textAlign: "center", display: "none" }}>
-                        <Typography sx={{ fontSize: 14 }}>
-                            Need a new workspace?{" "}
-                            <Link
-                                href={"/register"}
-                                sx={{
-                                    fontWeight: 600,
-                                    color: "inherit",
-                                    textDecoration: "none",
-                                    "&:hover": {
-                                        textDecoration: "underline",
-                                    },
-                                }}
-                            >
-                                Create an account
-                            </Link>
-                        </Typography>
-                    </Box>
-
                     {error && <Typography color="error">{error}</Typography>}
 
-                    {/* Log In Button */}
                     <Box sx={{ mt: 5 }}>
                         <CustomButton
                             sx={{ mb: 1.5 }}
                             fullWidth
                             onClick={() => handleLogin("client")}
                         >
-                            Enter Client Workspace
+                            I want to hire (Client)
                         </CustomButton>
                         <CustomButton
                             sx={{ mb: 2 }}
                             fullWidth
                             onClick={() => handleLogin("talent")}
                         >
-                            Enter Talent Workspace
+                            I want to work (Freelancer)
                         </CustomButton>
                     </Box>
+
+                    <Typography 
+                        sx={{ textAlign: 'center', fontSize: 12, color: 'text.secondary' }}
+                    >
+                        Demo: user1@email.com / kirjau123
+                    </Typography>
                 </Grid>
 
                 {/* Right Side - Image Placeholder */}
@@ -199,13 +162,12 @@ export default function LoginPage() {
                     }}
                 >
                     <Typography sx={{ fontSize: 30, fontWeight: 700 }}>
-                        Three agents, one product loop.
+                        Manage your projects with AI help
                     </Typography>
                     <Typography sx={{ fontSize: 15, lineHeight: 1.8 }}>
-                        Talent Acquisition manages signup and matchmaking. PM
-                        owns updates, timelines, task breakdowns, work checker,
-                        and reporting. Secretary captures MoM, summarizes chats,
-                        and suggests the next response.
+                        Whether you're hiring freelancers or working on projects,
+                        Kirjau helps you stay organized with smart task tracking,
+                        meeting summaries, and team chat - all in one place.
                     </Typography>
                 </Grid>
             </Grid>

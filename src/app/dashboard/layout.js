@@ -2,7 +2,6 @@
 
 import {
     Avatar,
-    AvatarGroup,
     Box,
     Container,
     MenuItem,
@@ -18,9 +17,7 @@ import Logo from "../_components/Logo";
 import NavigationBar, {
     NavigationBarProvider,
 } from "../_components/NavigationBar";
-import useUser from "../_hooks/useUser";
 
-// Icon imports
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
@@ -29,7 +26,6 @@ export default function DashboardLayout({ children }) {
     const [anchorEl, setAnchorEl] = useState(null);
     const [userType, setUserType] = useState(null);
     const router = useRouter();
-    // const user = useUser();
 
     const handleAvatarClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -73,103 +69,59 @@ export default function DashboardLayout({ children }) {
                     }}
                     direction="row"
                 >
-                    {/* Logo */}
-                    <Logo />
+                    <Stack direction="row" spacing={3} alignItems="center">
+                        <Logo />
+                    </Stack>
 
-                    {/* Navigation Bar */}
                     <NavigationBar />
 
-                    <Stack
-                        direction="row"
-                        spacing={8}
-                        sx={{
-                            alignItems: "center",
-                            justifyContent: "space-between",
+                    <Paper
+                        sx={{ px: 1.25, py: 1.5, borderRadius: 999 }}
+                        elevation={0}
+                    >
+                        <Stack direction="row" spacing={1.5}>
+                            <CustomIconButton
+                                icon={<SearchOutlinedIcon />}
+                            />
+                            {userType && (
+                                <CustomIconButton
+                                    icon={<HomeOutlinedIcon />}
+                                    onClick={() =>
+                                        router.push(`/home/${userType}`)
+                                    }
+                                />
+                            )}
+                            <Avatar
+                                alt="User Avatar"
+                                src="https://api.dicebear.com/7.x/avataaars/svg?backgroundColor=ffffff&seed=abdul"
+                                onClick={handleAvatarClick}
+                                sx={{ cursor: "pointer" }}
+                            />
+                        </Stack>
+                    </Paper>
+
+                    <Popover
+                        open={open}
+                        anchorEl={anchorEl}
+                        onClose={handleClose}
+                        anchorOrigin={{
+                            vertical: "bottom",
+                            horizontal: "right",
+                        }}
+                        transformOrigin={{
+                            vertical: "top",
+                            horizontal: "right",
                         }}
                     >
-                        {/* Avatar Group */}
-                        <Paper
-                            sx={{
-                                px: 1,
-                                py: 1.5,
-                                borderRadius: 999,
-                            }}
-                            elevation={0}
-                        >
-                            <AvatarGroup max={4}>
-                                <Avatar
-                                    alt="User 1"
-                                    src="https://api.dicebear.com/7.x/avataaars/svg?backgroundColor=ffffff&seed=abdul"
+                        <MenuList>
+                            <MenuItem onClick={handleLogout}>
+                                <LogoutOutlinedIcon
+                                    sx={{ mr: 1, fontSize: 20 }}
                                 />
-                                <Avatar
-                                    alt="User 2"
-                                    src="https://api.dicebear.com/7.x/avataaars/svg?backgroundColor=ffffff&seed=john"
-                                />
-                                <Avatar
-                                    alt="User 3"
-                                    src="https://api.dicebear.com/7.x/avataaars/svg?backgroundColor=ffffff&seed=alice"
-                                />
-                                <Avatar
-                                    alt="User 4"
-                                    src="https://api.dicebear.com/7.x/avataaars/svg?backgroundColor=ffffff&seed=bob"
-                                />
-                                <Avatar
-                                    alt="User 5"
-                                    src="https://api.dicebear.com/7.x/avataaars/svg?backgroundColor=ffffff&seed=charlie"
-                                />
-                            </AvatarGroup>
-                        </Paper>
-
-                        {/* Search, Notifications, User Avatar */}
-                        <Paper
-                            sx={{ px: 1.25, py: 1.5, borderRadius: 999 }}
-                            elevation={0}
-                        >
-                            <Stack direction="row" spacing={1.5}>
-                                <CustomIconButton
-                                    icon={<SearchOutlinedIcon />}
-                                />
-                                {userType && (
-                                    <CustomIconButton
-                                        icon={<HomeOutlinedIcon />}
-                                        onClick={() =>
-                                            router.push(`/home/${userType}`)
-                                        }
-                                    />
-                                )}
-                                <Avatar
-                                    alt="User Avatar"
-                                    src="https://api.dicebear.com/7.x/avataaars/svg?backgroundColor=ffffff&seed=abdul"
-                                    onClick={handleAvatarClick}
-                                    sx={{ cursor: "pointer" }}
-                                />
-                            </Stack>
-                        </Paper>
-
-                        {/* Avatar Menu Popover */}
-                        <Popover
-                            open={open}
-                            anchorEl={anchorEl}
-                            onClose={handleClose}
-                            anchorOrigin={{
-                                vertical: "bottom",
-                                horizontal: "right",
-                            }}
-                            transformOrigin={{
-                                vertical: "top",
-                                horizontal: "right",
-                            }}
-                        >
-                            <MenuList>
-                                <MenuItem onClick={handleLogout}>
-                                    <LogoutOutlinedIcon
-                                        sx={{ mr: 1, fontSize: 20 }}
-                                    />
-                                    Logout
-                                </MenuItem>
-                            </MenuList>
-                        </Popover>
-                    </Stack>
+                                Logout
+                            </MenuItem>
+                        </MenuList>
+                    </Popover>
                 </Stack>
 
                 <Box>{children}</Box>

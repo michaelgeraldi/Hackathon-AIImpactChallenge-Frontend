@@ -6,10 +6,11 @@ import { Box, Typography, Badge, Paper } from "@mui/material";
 // --- NavigationBar component ---
 
 const defaultTabs = [
-    { label: "PM Updates" },
-    { label: "PM Tasks" },
-    { label: "Secretary Reports" },
-    { label: "Secretary Chat", badge: 3 },
+    { label: "Project Overview" },
+    { label: "Task Board" },
+    { label: "Weekly Updates" },
+    { label: "Meeting Notes" },
+    { label: "Team Chat", badge: 3 },
 ];
 
 export default function NavigationBar({ tabs = defaultTabs }) {
@@ -86,7 +87,7 @@ const NavigationBarContext = React.createContext();
 export const useNavigationBarContext = () =>
     React.useContext(NavigationBarContext);
 
-export function NavigationBarProvider({ children, defaultActive = "PM Updates" }) {
+export function NavigationBarProvider({ children, defaultActive = "Project Overview" }) {
     const [active, setActive] = React.useState(defaultActive);
 
     return (

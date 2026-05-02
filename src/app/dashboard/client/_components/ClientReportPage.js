@@ -32,8 +32,7 @@ export default function ClientReportPage() {
         error,
     } = useSWR(
         projectId ? ["/pm/reports", projectId] : null,
-        ([url, pid]) =>
-            apiFetcher(url, {
+        ([url, pid]) => apiFetcher(url, {
                 method: "POST",
                 body: {
                     project_id: pid,

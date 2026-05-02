@@ -1,23 +1,28 @@
 "use client";
 
-import { Box, Typography, CircularProgress } from "@mui/material";
-import ActivitySection, {
-    useActivitySection,
-} from "../../../_components/ActivitySection";
-
+import React from "react";
+import { Box, Typography, CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions, Stack } from "@mui/material";
 import CustomCard from "@/app/_components/CustomCard";
+import CustomButton from "@/app/_components/CustomButton";
 import KanbanBoard from "@/app/_components/KanbanBoard";
+import WorkSubmissionForm from "./WorkSubmissionForm";
 import useSWR from "swr";
 import { apiFetcher } from "@/app/lib/api";
 import { getWorkspaceSession } from "@/app/lib/workspace-session";
+import { useFeedbackContext } from "@/app/_providers/FeedbackProvider";
 
 export default function WorkerTrackerPage() {
-    const activitySectionHook = useActivitySection();
+    const { showInfo, showSuccess, showError } = useFeedbackContext();
 
     const session = getWorkspaceSession();
     const projectId = session.project_id;
 
-    const { data: timelineData, isLoading } = useSWR(
+    const [selectedTask, setSelectedTask] = React.useState(null);
+    const [showSubmissionForm, setShowSubmissionForm] = React.useState(false);
+    const [showStartConfirm, setShowStartConfirm] = React.useState(false);
+    const [startingTask, setStartingTask] = React.useState(null);
+
+    const { data: timelineData, isLoading, mutate } = useSWR(
         projectId ? `/pm/projects/${projectId}/timeline` : null,
         (url) => apiFetcher(url),
         { revalidateOnFocus: false }
@@ -32,6 +37,47 @@ export default function WorkerTrackerPage() {
             case "completed": return "completed";
             case "blocked": return "review";
             default: return "todo";
+        }
+    };
+
+    const handleStartTask = async () => {
+        if (!projectId || !startingTask) return;
+        
+        console.log("Starting task:", startingTask);
+        console.log("Project ID:", projectId);
+        
+        try {
+            const response = await apiFetcher(`/pm/projects/${projectId}/tasks/${startingTask.id}/status`, {
+                method: "POST",
+                body: {
+                    status: "in_progress",
+                    notes: "Started working on task",
+                },
+            });
+            
+            console.log("Response:", response);
+            showSuccess(`Started working on "${startingTask.title}"`);
+            mutate();
+            setShowStartConfirm(false);
+            setStartingTask(null);
+        } catch (error) {
+            console.error("Error starting task:", error);
+            showError(error.message || "Failed to start task. Check console for details.");
+        }
+    };
+
+    const handleTaskClick = (task, columnId) => {
+        console.log("Task clicked:", task, "column:", columnId);
+        if (columnId === "inprogress") {
+            setSelectedTask(task);
+            setShowSubmissionForm(true);
+        } else if (columnId === "todo") {
+            setStartingTask(task);
+            setShowStartConfirm(true);
+        } else if (columnId === "completed") {
+            showInfo("This task is already completed");
+        } else if (columnId === "review") {
+            showInfo("This task is under review by PM");
         }
     };
 
@@ -65,17 +111,12 @@ export default function WorkerTrackerPage() {
 return (
         <Box sx={{ minHeight: "100vh" }}>
             <Typography sx={{ mb: 2, fontWeight: 700, fontSize: 22 }}>
-                PM delivery board
+                My Tasks
             </Typography>
             <Typography sx={{ mb: 3, color: "text.secondary" }}>
-                Keep your assigned tasks, review rounds, and Secretary follow-ups visible while you deliver.
+                Click on any task in "In Progress" to submit your work for review.
             </Typography>
-            {/* Activity Section */}
-            <CustomCard sx={{ mb: 3 }}>
-                <ActivitySection {...activitySectionHook} />
-            </CustomCard>
 
-            {/* Kanban Board */}
             {isLoading ? (
                 <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
                     <CircularProgress />
@@ -87,8 +128,43 @@ return (
                     </Typography>
                 </CustomCard>
             ) : (
-                <KanbanBoard columns={kanbanColumns} />
+                <KanbanBoard 
+                    columns={kanbanColumns} 
+                    onTaskClick={handleTaskClick}
+                    showSubmitHint={true}
+                />
             )}
+
+            <WorkSubmissionForm
+                open={showSubmissionForm}
+                onClose={() => {
+                    setShowSubmissionForm(false);
+                    setSelectedTask(null);
+                }}
+                task={selectedTask}
+                projectId={projectId}
+                onSuccess={() => mutate()}
+            />
+
+            <Dialog open={showStartConfirm} onClose={() => setShowStartConfirm(false)}>
+                <DialogTitle>Start Working on Task?</DialogTitle>
+                <DialogContent>
+                    <Typography>
+                        Do you want to start working on "{startingTask?.title}"?
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                        Once started, you'll be able to submit your work for review.
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <CustomButton variant="outlined" onClick={() => setShowStartConfirm(false)}>
+                        Cancel
+                    </CustomButton>
+                    <CustomButton onClick={handleStartTask}>
+                        Start Task
+                    </CustomButton>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 }
