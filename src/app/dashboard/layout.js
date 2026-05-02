@@ -17,7 +17,6 @@ import Logo from "../_components/Logo";
 import NavigationBar, {
     NavigationBarProvider,
 } from "../_components/NavigationBar";
-import ProjectSelector from "../_components/ProjectSelector";
 
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
@@ -70,69 +69,59 @@ export default function DashboardLayout({ children }) {
                     }}
                     direction="row"
                 >
-                    <Stack direction="row" spacing={3} sx={{ alignItems: 'center' }}>
+                    <Stack direction="row" spacing={3} alignItems="center">
                         <Logo />
-                        <ProjectSelector />
                     </Stack>
 
                     <NavigationBar />
 
-                    <Stack
-                        direction="row"
-                        spacing={3}
-                        sx={{
-                            alignItems: "center",
-                            justifyContent: "space-between",
+                    <Paper
+                        sx={{ px: 1.25, py: 1.5, borderRadius: 999 }}
+                        elevation={0}
+                    >
+                        <Stack direction="row" spacing={1.5}>
+                            <CustomIconButton
+                                icon={<SearchOutlinedIcon />}
+                            />
+                            {userType && (
+                                <CustomIconButton
+                                    icon={<HomeOutlinedIcon />}
+                                    onClick={() =>
+                                        router.push(`/home/${userType}`)
+                                    }
+                                />
+                            )}
+                            <Avatar
+                                alt="User Avatar"
+                                src="https://api.dicebear.com/7.x/avataaars/svg?backgroundColor=ffffff&seed=abdul"
+                                onClick={handleAvatarClick}
+                                sx={{ cursor: "pointer" }}
+                            />
+                        </Stack>
+                    </Paper>
+
+                    <Popover
+                        open={open}
+                        anchorEl={anchorEl}
+                        onClose={handleClose}
+                        anchorOrigin={{
+                            vertical: "bottom",
+                            horizontal: "right",
+                        }}
+                        transformOrigin={{
+                            vertical: "top",
+                            horizontal: "right",
                         }}
                     >
-                        <Paper
-                            sx={{ px: 1.25, py: 1.5, borderRadius: 999 }}
-                            elevation={0}
-                        >
-                            <Stack direction="row" spacing={1.5}>
-                                <CustomIconButton
-                                    icon={<SearchOutlinedIcon />}
+                        <MenuList>
+                            <MenuItem onClick={handleLogout}>
+                                <LogoutOutlinedIcon
+                                    sx={{ mr: 1, fontSize: 20 }}
                                 />
-                                {userType && (
-                                    <CustomIconButton
-                                        icon={<HomeOutlinedIcon />}
-                                        onClick={() =>
-                                            router.push(`/home/${userType}`)
-                                        }
-                                    />
-                                )}
-                                <Avatar
-                                    alt="User Avatar"
-                                    src="https://api.dicebear.com/7.x/avataaars/svg?backgroundColor=ffffff&seed=abdul"
-                                    onClick={handleAvatarClick}
-                                    sx={{ cursor: "pointer" }}
-                                />
-                            </Stack>
-                        </Paper>
-
-                        <Popover
-                            open={open}
-                            anchorEl={anchorEl}
-                            onClose={handleClose}
-                            anchorOrigin={{
-                                vertical: "bottom",
-                                horizontal: "right",
-                            }}
-                            transformOrigin={{
-                                vertical: "top",
-                                horizontal: "right",
-                            }}
-                        >
-                            <MenuList>
-                                <MenuItem onClick={handleLogout}>
-                                    <LogoutOutlinedIcon
-                                        sx={{ mr: 1, fontSize: 20 }}
-                                    />
-                                    Logout
-                                </MenuItem>
-                            </MenuList>
-                        </Popover>
-                    </Stack>
+                                Logout
+                            </MenuItem>
+                        </MenuList>
+                    </Popover>
                 </Stack>
 
                 <Box>{children}</Box>

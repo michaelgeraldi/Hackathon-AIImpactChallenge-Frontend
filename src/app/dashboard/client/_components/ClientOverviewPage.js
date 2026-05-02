@@ -1,8 +1,7 @@
 "use client";
 
 import React from "react";
-import { Box, Grid, Modal, Stack, Typography, CircularProgress } from "@mui/material";
-import CollapsibleTitle from "../../../_components/CollapsibleTitle";
+import { Box, Grid, Modal, Stack, Typography, Select, MenuItem } from "@mui/material";
 import CustomBarChart from "../../../_components/CustomBarChart";
 import CustomButton from "../../../_components/CustomButton";
 import CustomCard from "../../../_components/CustomCard";
@@ -10,6 +9,7 @@ import CustomChatCard from "../../../_components/CustomChatCard";
 import CustomDonutChart from "../../../_components/CustomDonutChart";
 
 import AddIcon from "@mui/icons-material/Add";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ActivitySection, {
     useActivitySection,
 } from "../../../_components/ActivitySection";
@@ -29,6 +29,7 @@ export default function ClientOverviewPage({ data }) {
     const session = getWorkspaceSession();
     const projects = getProjectList();
     let projectId = session.project_id;
+    const currentProjectName = session.project_name || "Select Project";
 
     React.useEffect(() => {
         if (!projectId && projects.length > 0) {
@@ -125,16 +126,34 @@ export default function ClientOverviewPage({ data }) {
 
     return (
         <Box>
-            <CollapsibleTitle
-                title="Your Project Dashboard"
-                subtitle="Track progress, manage tasks, and collaborate with your team"
-                defaultExpanded={false}
-            >
-                <Typography>
-                    View your project overview, manage tasks, and keep track of 
-                    all your team communications in one place.
-                </Typography>
-            </CollapsibleTitle>
+            <Stack direction="row" alignItems="center" spacing={0.5} sx={{ mb: 2 }}>
+                <Select
+                    value={projectId || ""}
+                    onChange={(e) => setActiveProject(e.target.value)}
+                    size="small"
+                    sx={{
+                        fontSize: 28,
+                        fontWeight: 700,
+                        color: 'text.primary',
+                        '.MuiOutlinedInput-notchedOutline': { border: 'none' },
+                        '.MuiSelect-select': { py: 0.5, pr: 0.5 },
+                    }}
+                    disableUnderline
+                    IconComponent={ArrowDropDownIcon}
+                >
+                    {projects.map((project) => (
+                        <MenuItem key={project.project_id} value={project.project_id} sx={{ fontSize: 20, fontWeight: 600 }}>
+                            {project.project_name}
+                        </MenuItem>
+                    ))}
+                </Select>
+            </Stack>
+
+            <Typography sx={{ fontSize: 14, color: 'text.secondary', mb: 1 }}>
+                Overview • Dashboard
+            </Typography>
+
+            <Box sx={{ borderBottom: '2px solid', borderColor: 'divider', mb: 3 }} />
 
             {!projectId ? (
                 <Box sx={{ mt: 4, textAlign: "center" }}>
