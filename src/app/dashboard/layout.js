@@ -69,7 +69,7 @@ export default function DashboardLayout({ children }) {
                     }}
                     direction="row"
                 >
-                    <Stack direction="row" spacing={3} alignItems="center">
+                    <Stack direction="row" spacing={3} sx={{ alignItems: 'center' }}>
                         <Logo />
                     </Stack>
 

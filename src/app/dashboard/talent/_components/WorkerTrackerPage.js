@@ -13,6 +13,7 @@ import { useFeedbackContext } from "@/app/_providers/FeedbackProvider";
 
 export default function WorkerTrackerPage() {
     const { showInfo, showSuccess, showError } = useFeedbackContext();
+    const [mounted, setMounted] = React.useState(false);
 
     const session = getWorkspaceSession();
     const projectId = session.project_id;
@@ -21,6 +22,10 @@ export default function WorkerTrackerPage() {
     const [showSubmissionForm, setShowSubmissionForm] = React.useState(false);
     const [showStartConfirm, setShowStartConfirm] = React.useState(false);
     const [startingTask, setStartingTask] = React.useState(null);
+
+    React.useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const { data: timelineData, isLoading, mutate } = useSWR(
         projectId ? `/pm/projects/${projectId}/timeline` : null,
@@ -68,12 +73,13 @@ export default function WorkerTrackerPage() {
 
     const handleTaskClick = (task, columnId) => {
         console.log("Task clicked:", task, "column:", columnId);
-        if (columnId === "inprogress") {
-            setSelectedTask(task);
-            setShowSubmissionForm(true);
-        } else if (columnId === "todo") {
+        
+        if (columnId === "todo") {
             setStartingTask(task);
             setShowStartConfirm(true);
+        } else if (columnId === "inprogress") {
+            setSelectedTask(task);
+            setShowSubmissionForm(true);
         } else if (columnId === "completed") {
             showInfo("This task is already completed");
         } else if (columnId === "review") {
@@ -114,10 +120,14 @@ return (
                 My Tasks
             </Typography>
             <Typography sx={{ mb: 3, color: "text.secondary" }}>
-                Click on any task in "In Progress" to submit your work for review.
+                Click on any task in "To Do" to start, or "In Progress" to submit for review.
             </Typography>
 
-            {isLoading ? (
+            {!mounted ? (
+                <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+                    <CircularProgress />
+                </Box>
+            ) : isLoading ? (
                 <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
                     <CircularProgress />
                 </Box>

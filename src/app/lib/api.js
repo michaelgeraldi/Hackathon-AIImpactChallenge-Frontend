@@ -1,9 +1,11 @@
-const DEFAULT_API_URL = "http://127.0.0.1:8000";
+const DEFAULT_API_URL = process.env.NODE_ENV === "production" 
+    ? "https://keroyokan-func-bde6ekdtcvhjb3ar.indonesiacentral-01.azurewebsites.net"
+    : "http://127.0.0.1:8000";
 const API_PREFIX = "/api/v1";
 
 function getApiBaseUrl() {
-    const configuredBaseUrl =
-        process.env.NEXT_PUBLIC_API_URL || DEFAULT_API_URL;
+    const envUrl = process.env.NEXT_PUBLIC_API_URL;
+    const configuredBaseUrl = envUrl || DEFAULT_API_URL;
 
     return configuredBaseUrl.replace(/\/$/, "");
 }
