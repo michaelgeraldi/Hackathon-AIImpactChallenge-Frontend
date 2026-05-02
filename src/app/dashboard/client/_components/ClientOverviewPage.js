@@ -17,23 +17,33 @@ import ClientProjectForm from "../../../home/client/_components/ClientProjectFor
 import { useFeedbackContext } from "@/app/_providers/FeedbackProvider";
 import useSWR from "swr";
 import { apiFetcher } from "@/app/lib/api";
-import { getWorkspaceSession } from "@/app/lib/workspace-session";
+import { getWorkspaceSession, getProjectList, setActiveProject } from "@/app/lib/workspace-session";
 
 export default function ClientOverviewPage({ data }) {
     const [isCreatingProject, setCreatingProject] = React.useState(false);
+    const [isGeneratingTasks, setGeneratingTasks] = React.useState(false);
+    const [isGeneratingTimeline, setGeneratingTimeline] = React.useState(false);
     const activitySectionHook = useActivitySection();
-    const { showInfo } = useFeedbackContext();
+    const { showInfo, showSuccess, showError } = useFeedbackContext();
 
     const session = getWorkspaceSession();
-    const projectId = session.project_id;
+    const projects = getProjectList();
+    let projectId = session.project_id;
 
-    const { data: contextData, isLoading: contextLoading } = useSWR(
+    React.useEffect(() => {
+        if (!projectId && projects.length > 0) {
+            setActiveProject(projects[0].project_id);
+            window.location.reload();
+        }
+    }, []);
+
+    const { data: contextData, isLoading: contextLoading, mutate: mutateContext } = useSWR(
         projectId ? `/pm/projects/${projectId}/context` : null,
         (url) => apiFetcher(url),
         { revalidateOnFocus: false }
     );
 
-    const { data: timelineData, isLoading: timelineLoading } = useSWR(
+    const { data: timelineData, isLoading: timelineLoading, mutate: mutateTimeline } = useSWR(
         projectId ? `/pm/projects/${projectId}/timeline` : null,
         (url) => apiFetcher(url),
         { revalidateOnFocus: false }
@@ -56,80 +66,158 @@ export default function ClientOverviewPage({ data }) {
     const workCheckerQueue = events.filter(e => e.event_type === "work_check" && !e.resolved).length;
     const secretaryNotes = contextData?.snapshot?.recent_entries?.length || 0;
 
+    React.useEffect(() => {
+        if (projectId && contextData) {
+            mutateContext();
+            mutateTimeline();
+        }
+    }, [projectId, mutateContext, mutateTimeline]);
+
+    const generateTaskBreakdown = async () => {
+        if (!projectId || !projectOverview) {
+            showInfo("Please create a project first.");
+            return;
+        }
+
+        setGeneratingTasks(true);
+        try {
+            await apiFetcher("/pm/task-breakdown", {
+                method: "POST",
+                body: {
+                    project_id: projectId,
+                    delivery_goal: projectOverview.description || "Complete project delivery",
+                    source_material: projectOverview.scope || "",
+                    freelancer_focus: projectOverview.freelancers?.map(f => f.role) || [],
+                },
+            });
+            showSuccess("Task breakdown generated successfully!");
+            mutateTimeline();
+        } catch (error) {
+            showError(error.message || "Failed to generate task breakdown.");
+        } finally {
+            setGeneratingTasks(false);
+        }
+    };
+
+    const generateTimeline = async () => {
+        if (!projectId) {
+            showInfo("Please create a project first.");
+            return;
+        }
+
+        setGeneratingTimeline(true);
+        try {
+            await apiFetcher("/pm/timeline/generate", {
+                method: "POST",
+                body: {
+                    project_id: projectId,
+                    start_date: new Date().toISOString(),
+                },
+            });
+            showSuccess("Timeline generated successfully!");
+            mutateTimeline();
+        } catch (error) {
+            showError(error.message || "Failed to generate timeline.");
+        } finally {
+            setGeneratingTimeline(false);
+        }
+    };
+
     return (
         <Box>
             <CollapsibleTitle
-                title="PM delivery overview"
-                subtitle="Timeline, task breakdowns, work checker, and reporting in one place"
+                title="Your Project Dashboard"
+                subtitle="Track progress, manage tasks, and collaborate with your team"
                 defaultExpanded={false}
             >
                 <Typography>
-                    PM keeps the project moving, while Secretary turns every
-                    checkpoint into notes, summaries, and follow-ups.
+                    View your project overview, manage tasks, and keep track of 
+                    all your team communications in one place.
                 </Typography>
             </CollapsibleTitle>
 
-            <Stack sx={{ mt: 3 }} direction="row" spacing={2.5}>
-                {/* Statistics Cards */}
-                <Grid container spacing={2.5} sx={{ flex: 1 }}>
-                    <StatisticsCard title="Matched Talent" value="08" />
-                    <StatisticsCard title="PM Tasks Closed" value="67%" />
-                    <StatisticsCard title="Work Checker Queue" value="11" />
-                    <StatisticsCard title="Secretary Notes" value="14" />
-                </Grid>
-
-                {/* Buttons */}
-                <Stack
-                    spacing={2}
-                    sx={{
-                        mt: 3,
-                        alignItems: "center",
-                        justifyContent: "center",
-                    }}
-                >
+            {!projectId ? (
+                <Box sx={{ mt: 4, textAlign: "center" }}>
+                    <Typography sx={{ mb: 3, color: "text.secondary" }}>
+                        No project yet. Create your first project to get started!
+                    </Typography>
                     <CustomButton
+                        variant="contained"
+                        size="large"
                         startIcon={<AddIcon />}
-                        fullWidth
-                        onClick={() =>
-                            showInfo(
-                                "Use the Talent Acquisition workspace to add and shortlist more matched talent for this PM delivery flow.",
-                            )
-                        }
+                        onClick={() => setCreatingProject(true)}
                     >
-                        Add matched talent
+                        Create New Project
                     </CustomButton>
-                    <CustomButton
-                        startIcon={<AddIcon />}
-                        fullWidth
-                        // onClick={() => setCreatingProject(true)}
-                    >
-                        Create PM task
-                    </CustomButton>
-                </Stack>
-            </Stack>
+                </Box>
+            ) : (
+                <>
+                    <Stack sx={{ mt: 3 }} direction="row" spacing={2.5}>
+                        <Grid container spacing={2.5} sx={{ flex: 1 }}>
+                            <StatisticsCard title="Team Members" value={matchedTalent.toString().padStart(2, "0")} />
+                            <StatisticsCard title="Tasks Done" value={`${tasksClosed}%`} />
+                            <StatisticsCard title="Pending Review" value={workCheckerQueue.toString().padStart(2, "0")} />
+                            <StatisticsCard title="Meeting Notes" value={secretaryNotes.toString().padStart(2, "0")} />
+                        </Grid>
 
-            <Grid container sx={{ mt: 2.5 }} spacing={2.5}>
-                <Grid size={3}>
-                    <CustomCard title="PM timeline">
-                        <Box sx={{ mt: 1.5 }}>
-                            <CustomBarChart />
-                        </Box>
-                    </CustomCard>
-                    <CustomCard title="PM work checker" sx={{ mt: 2.5 }}>
-                        <Box sx={{ mt: 1.5 }}>
-                            <CustomDonutChart />
-                        </Box>
-                    </CustomCard>
-                </Grid>
-                <Grid size={4.5}>
-                    <CustomCard sx={{ height: "100%" }}>
-                        <ActivitySection {...activitySectionHook} />
-                    </CustomCard>
-                </Grid>
-                <Grid size={4.5}>
-                    <CustomChatCard title="Secretary chat summary" />
-                </Grid>
-            </Grid>
+                        <Stack
+                            spacing={2}
+                            sx={{
+                                mt: 3,
+                                alignItems: "center",
+                                justifyContent: "center",
+                            }}
+                        >
+                            <CustomButton
+                                startIcon={<AddIcon />}
+                                fullWidth
+                                onClick={generateTaskBreakdown}
+                                loading={isGeneratingTasks}
+                            >
+                                Create Tasks from Brief
+                            </CustomButton>
+                            <CustomButton
+                                startIcon={<AddIcon />}
+                                fullWidth
+                                onClick={generateTimeline}
+                                loading={isGeneratingTimeline}
+                            >
+                                Create Schedule
+                            </CustomButton>
+                            <CustomButton
+                                variant="outlined"
+                                fullWidth
+                                onClick={() => setCreatingProject(true)}
+                            >
+                                New Project
+                            </CustomButton>
+                        </Stack>
+                    </Stack>
+
+                    <Grid container sx={{ mt: 2.5 }} spacing={2.5}>
+                        <Grid size={3}>
+                            <CustomCard title="PM timeline">
+                                <Box sx={{ mt: 1.5 }}>
+                                    <CustomBarChart />
+                                </Box>
+                            </CustomCard>
+                            <CustomCard title="PM work checker" sx={{ mt: 2.5 }}>
+                                <Box sx={{ mt: 1.5 }}>
+                                    <CustomDonutChart />
+                                </Box>
+                            </CustomCard>
+                        </Grid>
+                        <Grid size={4.5}>
+                            <CustomCard sx={{ height: "100%" }}>
+                                <ActivitySection {...activitySectionHook} />
+                            </CustomCard>
+                        </Grid>
+                        <Grid size={4.5}>
+                            <CustomChatCard title="Secretary chat summary" />
+                        </Grid>
+                    </Grid>
+                </>
+            )}
 
             <Modal
                 open={isCreatingProject}

@@ -2,7 +2,6 @@
 
 import {
     Avatar,
-    AvatarGroup,
     Box,
     Container,
     MenuItem,
@@ -18,9 +17,8 @@ import Logo from "../_components/Logo";
 import NavigationBar, {
     NavigationBarProvider,
 } from "../_components/NavigationBar";
-import useUser from "../_hooks/useUser";
+import ProjectSelector from "../_components/ProjectSelector";
 
-// Icon imports
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
@@ -29,7 +27,6 @@ export default function DashboardLayout({ children }) {
     const [anchorEl, setAnchorEl] = useState(null);
     const [userType, setUserType] = useState(null);
     const router = useRouter();
-    // const user = useUser();
 
     const handleAvatarClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -73,54 +70,21 @@ export default function DashboardLayout({ children }) {
                     }}
                     direction="row"
                 >
-                    {/* Logo */}
-                    <Logo />
+                    <Stack direction="row" spacing={3} sx={{ alignItems: 'center' }}>
+                        <Logo />
+                        <ProjectSelector />
+                    </Stack>
 
-                    {/* Navigation Bar */}
                     <NavigationBar />
 
                     <Stack
                         direction="row"
-                        spacing={8}
+                        spacing={3}
                         sx={{
                             alignItems: "center",
                             justifyContent: "space-between",
                         }}
                     >
-                        {/* Avatar Group */}
-                        <Paper
-                            sx={{
-                                px: 1,
-                                py: 1.5,
-                                borderRadius: 999,
-                            }}
-                            elevation={0}
-                        >
-                            <AvatarGroup max={4}>
-                                <Avatar
-                                    alt="User 1"
-                                    src="https://api.dicebear.com/7.x/avataaars/svg?backgroundColor=ffffff&seed=abdul"
-                                />
-                                <Avatar
-                                    alt="User 2"
-                                    src="https://api.dicebear.com/7.x/avataaars/svg?backgroundColor=ffffff&seed=john"
-                                />
-                                <Avatar
-                                    alt="User 3"
-                                    src="https://api.dicebear.com/7.x/avataaars/svg?backgroundColor=ffffff&seed=alice"
-                                />
-                                <Avatar
-                                    alt="User 4"
-                                    src="https://api.dicebear.com/7.x/avataaars/svg?backgroundColor=ffffff&seed=bob"
-                                />
-                                <Avatar
-                                    alt="User 5"
-                                    src="https://api.dicebear.com/7.x/avataaars/svg?backgroundColor=ffffff&seed=charlie"
-                                />
-                            </AvatarGroup>
-                        </Paper>
-
-                        {/* Search, Notifications, User Avatar */}
                         <Paper
                             sx={{ px: 1.25, py: 1.5, borderRadius: 999 }}
                             elevation={0}
@@ -146,7 +110,6 @@ export default function DashboardLayout({ children }) {
                             </Stack>
                         </Paper>
 
-                        {/* Avatar Menu Popover */}
                         <Popover
                             open={open}
                             anchorEl={anchorEl}

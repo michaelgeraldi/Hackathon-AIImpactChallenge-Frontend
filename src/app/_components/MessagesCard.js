@@ -9,10 +9,9 @@ import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import CustomIconButton from "./CustomIconButton";
 import SearchField from "./SearchField";
-import useMutation from "../_hooks/useMutation";
 import { useFeedbackContext } from "../_providers/FeedbackProvider";
+import { secretaryApi } from "../lib/api-service";
 
-// Icon imports
 import AttachFileOutlinedIcon from "@mui/icons-material/AttachFileOutlined";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import CallOutlinedIcon from "@mui/icons-material/CallOutlined";
@@ -20,131 +19,99 @@ import EmojiEmotionsOutlinedIcon from "@mui/icons-material/EmojiEmotionsOutlined
 import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
 import SendIcon from "@mui/icons-material/Send";
 import VideocamOutlinedIcon from "@mui/icons-material/VideocamOutlined";
-
-const DEFAULT_CONVERSATIONS = [
-    {
-        id: "conv-secretary-client",
-        projectId: "proj-demo-client",
-        participantName: "Secretary Assistant",
-        participantRole: "Client workspace support",
-        preview:
-            "Summarize the latest PM updates and suggest a response for the client.",
-        timestamp: "Just now",
-        messages: [
-            {
-                id: "msg-1",
-                sender: "assistant",
-                content:
-                    "Secretary summary: two action items should move to PM, one client concern needs a reply today, and the meeting notes are ready to share.",
-            },
-            {
-                id: "msg-2",
-                sender: "user",
-                content:
-                    "Can you summarize today’s thread and highlight anything PM should turn into a task?",
-            },
-        ],
-    },
-    {
-        id: "conv-secretary-freelancer",
-        projectId: "proj-demo-freelancer",
-        participantName: "Secretary Assistant",
-        participantRole: "Freelancer update support",
-        preview:
-            "Prepare a cleaner status update before sending it to PM and the project owner.",
-        timestamp: "5 min ago",
-        messages: [
-            {
-                id: "msg-3",
-                sender: "assistant",
-                content:
-                    "Secretary can turn your rough update into a PM-ready summary with clearer risks and next steps.",
-            },
-        ],
-    },
-];
+import useSWR from "swr";
+import { apiFetcher } from "../lib/api";
+import { getWorkspaceSession } from "../lib/workspace-session";
+import useSWRMutation from "swr/mutation";
 
 export default function MessagesCard() {
     const [searchQuery, setSearchQuery] = React.useState("");
     const [draft, setDraft] = React.useState("");
-    const [conversations, setConversations] = React.useState(DEFAULT_CONVERSATIONS);
-    const [selectedConversationId, setSelectedConversationId] = React.useState(
-        DEFAULT_CONVERSATIONS[0].id,
-    );
+    const [selectedConversationId, setSelectedConversationId] = React.useState(null);
     const [suggestions, setSuggestions] = React.useState([]);
     const [toneAnalysis, setToneAnalysis] = React.useState("");
     const [reasoning, setReasoning] = React.useState("");
-    const { post, isLoading } = useMutation("/secretary/suggest");
     const { showError, showInfo, showSuccess } = useFeedbackContext();
+    const session = getWorkspaceSession();
+    const projectId = session.project_id;
+
+    const { data: conversationsData, error: convError, isLoading: convLoading } = useSWR(
+        projectId ? `/secretary/projects/${projectId}/conversations` : null,
+        (url) => apiFetcher(url)
+    );
+
+    const conversations = conversationsData || [];
+
+    const selectedConversation = conversations.find(
+        (conv) => conv.conversation_id === selectedConversationId
+    ) || conversations[0] || null;
+
+    React.useEffect(() => {
+        if (conversations.length > 0 && !selectedConversationId) {
+            setSelectedConversationId(conversations[0].conversation_id);
+        }
+    }, [conversations, selectedConversationId]);
+
+    const { data: messagesData, mutate: mutateMessages } = useSWR(
+        selectedConversation && projectId
+            ? {
+                  url: "/secretary/chat/history",
+                  convId: selectedConversation.conversation_id,
+                  projId: projectId,
+              }
+            : null,
+        async ({ convId, projId }) =>
+            secretaryApi.getChatHistory({
+                project_id: projId,
+                conversation_id: convId,
+                limit: 50,
+                before_message_id: null,
+            })
+    );
+
+    const messages = messagesData?.messages || [];
+
+    const { trigger: sendMessage, isMutating: sendLoading } = useSWRMutation(
+        "/secretary/messages",
+        async (_, { arg }) => secretaryApi.sendMessage(arg)
+    );
+
+    const { trigger: getSuggestions, isMutating: suggestLoading } = useSWRMutation(
+        "/secretary/suggest",
+        async (_, { arg }) => secretaryApi.getSuggestions(arg)
+    );
 
     const filteredConversations = React.useMemo(() => {
         const query = searchQuery.trim().toLowerCase();
-
-        if (!query) {
-            return conversations;
-        }
-
-        return conversations.filter((conversation) => {
-            return [
-                conversation.participantName,
-                conversation.participantRole,
-                conversation.preview,
-            ]
+        if (!query) return conversations;
+        return conversations.filter((conv) => {
+            return [conv.title, conv.conversation_type]
                 .join(" ")
                 .toLowerCase()
                 .includes(query);
         });
     }, [conversations, searchQuery]);
 
-    const selectedConversation =
-        conversations.find(
-            (conversation) => conversation.id === selectedConversationId,
-        ) || conversations[0];
-
-    const updateConversationMessages = React.useCallback(
-        (conversationId, updater) => {
-            setConversations((prevConversations) =>
-                prevConversations.map((conversation) => {
-                    if (conversation.id !== conversationId) {
-                        return conversation;
-                    }
-
-                    const nextMessages = updater(conversation.messages);
-
-                    return {
-                        ...conversation,
-                        preview:
-                            nextMessages[nextMessages.length - 1]?.content ||
-                            conversation.preview,
-                        timestamp: "Just now",
-                        messages: nextMessages,
-                    };
-                }),
-            );
-        },
-        [],
-    );
-
     const requestSecretarySuggestions = React.useCallback(
         async (message) => {
             const trimmedMessage = message.trim();
 
             if (!trimmedMessage) {
-                showInfo(
-                    "Type a message first so Secretary can generate reply suggestions.",
-                );
+                showInfo("Type a message first so Secretary can generate reply suggestions.");
+                return;
+            }
+
+            if (!selectedConversation) {
+                showError("No conversation selected.");
                 return;
             }
 
             try {
-                const response = await post({
-                    project_id: selectedConversation.projectId,
-                    conversation_id: selectedConversation.id,
+                const response = await getSuggestions({
+                    project_id: projectId,
+                    conversation_id: selectedConversation.conversation_id,
                     current_message: trimmedMessage,
-                    context_messages: Math.min(
-                        selectedConversation.messages.length,
-                        10,
-                    ),
+                    context_messages: Math.min(messages.length, 10),
                 });
 
                 const nextSuggestions = response?.suggestions || [];
@@ -153,30 +120,15 @@ export default function MessagesCard() {
                 setReasoning(response?.reasoning || "");
 
                 if (nextSuggestions.length > 0) {
-                    updateConversationMessages(
-                        selectedConversation.id,
-                        (messages) => [
-                            ...messages,
-                            {
-                                id: crypto.randomUUID(),
-                                sender: "assistant",
-                                content: `Secretary suggestions ready: ${nextSuggestions[0]}`,
-                            },
-                        ],
-                    );
+                    showSuccess("Secretary suggestions generated from the backend.");
                 }
-
-                showSuccess(
-                    "Secretary suggestions generated from the backend.",
-                );
             } catch (error) {
                 showError(
-                    error.message ||
-                        "Secretary suggestion request failed. Check the backend response.",
+                    error.message || "Secretary suggestion request failed. Check the backend response."
                 );
             }
         },
-        [post, selectedConversation, showError, showInfo, showSuccess, updateConversationMessages],
+        [getSuggestions, selectedConversation, projectId, messages, showError, showInfo, showSuccess]
     );
 
     const handleSend = async () => {
@@ -187,24 +139,34 @@ export default function MessagesCard() {
             return;
         }
 
-        updateConversationMessages(selectedConversation.id, (messages) => [
-            ...messages,
-            {
-                id: crypto.randomUUID(),
-                sender: "user",
-                content: trimmedDraft,
-            },
-        ]);
-
-        setDraft("");
-
-        if (trimmedDraft.includes("/secretary")) {
-            const cleanedPrompt = trimmedDraft.replace("/secretary", "").trim();
-            await requestSecretarySuggestions(cleanedPrompt || trimmedDraft);
+        if (!selectedConversation) {
+            showError("No conversation selected.");
             return;
         }
 
-        showSuccess("Message added to the thread.");
+        try {
+            await sendMessage({
+                project_id: projectId,
+                conversation_id: selectedConversation.conversation_id,
+                sender_type: "client",
+                sender_id: session.talentEmail || "user-client",
+                sender_name: session.talentName || "Client",
+                content: trimmedDraft,
+                reply_to: null,
+            });
+
+            setDraft("");
+            mutateMessages();
+
+            if (trimmedDraft.includes("/secretary")) {
+                const cleanedPrompt = trimmedDraft.replace("/secretary", "").trim();
+                await requestSecretarySuggestions(cleanedPrompt || trimmedDraft);
+            } else {
+                showSuccess("Message sent successfully.");
+            }
+        } catch (error) {
+            showError(error.message || "Failed to send message.");
+        }
     };
 
     const handleUseSuggestion = (suggestion) => {
@@ -215,6 +177,14 @@ export default function MessagesCard() {
     const handlePlaceholderAction = (label) => {
         showInfo(`${label} is not connected yet, but the Secretary suggestion flow is live.`);
     };
+
+    if (convLoading) {
+        return (
+            <Paper elevation={1} sx={{ p: 5, borderRadius: 5, height: "80vh" }}>
+                <Typography>Loading conversations...</Typography>
+            </Paper>
+        );
+    }
 
     return (
         <Paper
@@ -260,11 +230,11 @@ export default function MessagesCard() {
                     >
                         {filteredConversations.map((conversation) => (
                             <MessageListItem
-                                key={conversation.id}
-                                active={conversation.id === selectedConversation.id}
+                                key={conversation.conversation_id}
+                                active={conversation.conversation_id === selectedConversationId}
                                 conversation={conversation}
                                 onClick={() => {
-                                    setSelectedConversationId(conversation.id);
+                                    setSelectedConversationId(conversation.conversation_id);
                                     setSuggestions([]);
                                     setToneAnalysis("");
                                     setReasoning("");
@@ -285,242 +255,251 @@ export default function MessagesCard() {
                         minWidth: 0,
                     }}
                 >
-                    <Stack
-                        direction="row"
-                        sx={{
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                        }}
-                    >
-                        <Stack
-                            direction="row"
-                            sx={{
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                                gap: 2,
-                            }}
-                        >
-                            <Avatar />
-                            <Box>
-                                <Typography sx={{ fontWeight: 600 }}>
-                                    {selectedConversation.participantName}
-                                </Typography>
-                                <Typography sx={{ fontWeight: 300 }}>
-                                    {selectedConversation.participantRole}
-                                </Typography>
-                            </Box>
-                        </Stack>
-
-                        <Stack
-                            direction="row"
-                            sx={{
-                                alignItems: "center",
-                                gap: 1.5,
-                            }}
-                        >
-                            <CustomIconButton
-                                icon={<VideocamOutlinedIcon />}
-                                onClick={() =>
-                                    handlePlaceholderAction("Video meeting")
-                                }
-                            />
-                            <CustomIconButton
-                                icon={<CallOutlinedIcon />}
-                                onClick={() => handlePlaceholderAction("Voice call")}
-                            />
-                        </Stack>
-                    </Stack>
-
-                    <Box sx={{ flex: 1, minHeight: 0, overflow: "hidden" }}>
-                        <Stack
-                            sx={{
-                                gap: 2,
-                                maxHeight: "100%",
-                                overflowY: "auto",
-                                pr: 1,
-                            }}
-                        >
-                            {selectedConversation.messages.map((message) => (
-                                <MessageBubble
-                                    key={message.id}
-                                    isSentByUser={message.sender === "user"}
-                                    content={message.content}
-                                />
-                            ))}
-                        </Stack>
-                    </Box>
-
-                    {(suggestions.length > 0 || toneAnalysis || reasoning) && (
-                        <Box
-                            sx={{
-                                borderRadius: 4,
-                                p: 3,
-                                backgroundColor: "grey.main",
-                            }}
-                        >
-                            <Typography sx={{ fontWeight: 700, mb: 1 }}>
-                                Secretary suggestions
-                            </Typography>
-                            {toneAnalysis && (
-                                <Typography
-                                    sx={{ fontSize: 13, color: "text.secondary", mb: 1 }}
+                    {selectedConversation ? (
+                        <>
+                            <Stack
+                                direction="row"
+                                sx={{
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                }}
+                            >
+                                <Stack
+                                    direction="row"
+                                    sx={{
+                                        alignItems: "center",
+                                        justifyContent: "space-between",
+                                        gap: 2,
+                                    }}
                                 >
-                                    Tone: {toneAnalysis}
-                                </Typography>
-                            )}
-                            {reasoning && (
-                                <Typography
-                                    sx={{ fontSize: 13, color: "text.secondary", mb: 2 }}
-                                >
-                                    {reasoning}
-                                </Typography>
-                            )}
-                            <Stack sx={{ gap: 1.5 }}>
-                                {suggestions.map((suggestion, index) => (
-                                    <Box
-                                        key={`${selectedConversation.id}-${index}`}
-                                        sx={{
-                                            borderRadius: 3,
-                                            backgroundColor: "white",
-                                            p: 2,
-                                        }}
-                                    >
-                                        <Typography sx={{ lineHeight: 1.6 }}>
-                                            {suggestion}
+                                    <Avatar />
+                                    <Box>
+                                        <Typography sx={{ fontWeight: 600 }}>
+                                            {selectedConversation.title || "Secretary Assistant"}
                                         </Typography>
-                                        <Stack
-                                            direction="row"
-                                            sx={{ mt: 1.5, justifyContent: "space-between" }}
-                                        >
-                                            <Typography
-                                                sx={{
-                                                    fontSize: 12,
-                                                    color: "text.secondary",
-                                                }}
-                                            >
-                                                From `/secretary/suggest`
-                                            </Typography>
-                                            <Typography
-                                                onClick={() => handleUseSuggestion(suggestion)}
-                                                sx={{
-                                                    fontSize: 12,
-                                                    fontWeight: 700,
-                                                    color: "primary.main",
-                                                    cursor: "pointer",
-                                                }}
-                                            >
-                                                Use suggestion
-                                            </Typography>
-                                        </Stack>
+                                        <Typography sx={{ fontWeight: 300 }}>
+                                            {selectedConversation.participants?.join(", ") || "Conversation"}
+                                        </Typography>
                                     </Box>
-                                ))}
+                                </Stack>
+
+                                <Stack
+                                    direction="row"
+                                    sx={{
+                                        alignItems: "center",
+                                        gap: 1.5,
+                                    }}
+                                >
+                                    <CustomIconButton
+                                        icon={<VideocamOutlinedIcon />}
+                                        onClick={() => handlePlaceholderAction("Video meeting")}
+                                    />
+                                    <CustomIconButton
+                                        icon={<CallOutlinedIcon />}
+                                        onClick={() => handlePlaceholderAction("Voice call")}
+                                    />
+                                </Stack>
                             </Stack>
+
+                            <Box sx={{ flex: 1, minHeight: 0, overflow: "hidden" }}>
+                                <Stack
+                                    sx={{
+                                        gap: 2,
+                                        maxHeight: "100%",
+                                        overflowY: "auto",
+                                        pr: 1,
+                                    }}
+                                >
+                                    {messages.map((message) => (
+                                        <MessageBubble
+                                            key={message.message_id}
+                                            isSentByUser={
+                                                message.sender_type === "client" ||
+                                                message.sender_type === "freelancer"
+                                            }
+                                            content={message.content}
+                                        />
+                                    ))}
+                                </Stack>
+                            </Box>
+
+                            {(suggestions.length > 0 || toneAnalysis || reasoning) && (
+                                <Box
+                                    sx={{
+                                        borderRadius: 4,
+                                        p: 3,
+                                        backgroundColor: "grey.main",
+                                    }}
+                                >
+                                    <Typography sx={{ fontWeight: 700, mb: 1 }}>
+                                        Secretary suggestions
+                                    </Typography>
+                                    {toneAnalysis && (
+                                        <Typography
+                                            sx={{ fontSize: 13, color: "text.secondary", mb: 1 }}
+                                        >
+                                            Tone: {toneAnalysis}
+                                        </Typography>
+                                    )}
+                                    {reasoning && (
+                                        <Typography
+                                            sx={{ fontSize: 13, color: "text.secondary", mb: 2 }}
+                                        >
+                                            {reasoning}
+                                        </Typography>
+                                    )}
+                                    <Stack sx={{ gap: 1.5 }}>
+                                        {suggestions.map((suggestion, index) => (
+                                            <Box
+                                                key={`${selectedConversation.conversation_id}-${index}`}
+                                                sx={{
+                                                    borderRadius: 3,
+                                                    backgroundColor: "white",
+                                                    p: 2,
+                                                }}
+                                            >
+                                                <Typography sx={{ lineHeight: 1.6 }}>
+                                                    {suggestion}
+                                                </Typography>
+                                                <Stack
+                                                    direction="row"
+                                                    sx={{ mt: 1.5, justifyContent: "space-between" }}
+                                                >
+                                                    <Typography
+                                                        sx={{
+                                                            fontSize: 12,
+                                                            color: "text.secondary",
+                                                        }}
+                                                    >
+                                                        From `/secretary/suggest`
+                                                    </Typography>
+                                                    <Typography
+                                                        onClick={() => handleUseSuggestion(suggestion)}
+                                                        sx={{
+                                                            fontSize: 12,
+                                                            fontWeight: 700,
+                                                            color: "primary.main",
+                                                            cursor: "pointer",
+                                                        }}
+                                                    >
+                                                        Use suggestion
+                                                    </Typography>
+                                                </Stack>
+                                            </Box>
+                                        ))}
+                                    </Stack>
+                                </Box>
+                            )}
+
+                            <Stack
+                                direction="row"
+                                sx={{
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                    gap: 2,
+                                    backgroundColor: "white",
+                                    border: "1px solid",
+                                    borderColor: "violet.main",
+                                    borderRadius: 10,
+                                    px: 3,
+                                    py: 2,
+                                    width: "100%",
+                                }}
+                            >
+                                <Box sx={{ flex: 1 }}>
+                                    <TextField
+                                        fullWidth
+                                        value={draft}
+                                        onChange={(event) => setDraft(event.target.value)}
+                                        onKeyDown={(event) => {
+                                            if (event.key === "Enter" && !event.shiftKey) {
+                                                event.preventDefault();
+                                                void handleSend();
+                                            }
+                                        }}
+                                        placeholder="Type /secretary to generate suggestions from the backend..."
+                                        variant="standard"
+                                        multiline
+                                        maxRows={4}
+                                        sx={{
+                                            "& .MuiInput-root": {
+                                                fontSize: 14,
+                                            },
+                                            "& .MuiInput-root:before, & .MuiInput-root:after": {
+                                                borderBottom: "none !important",
+                                            },
+                                        }}
+                                    />
+                                    <Stack direction="row" sx={{ gap: 0.25, mt: 1.25 }}>
+                                        <CustomIconButton
+                                            icon={<AttachFileOutlinedIcon />}
+                                            iconSize={24}
+                                            bgColor="transparent"
+                                            onClick={() => handlePlaceholderAction("Attachment upload")}
+                                        />
+                                        <CustomIconButton
+                                            icon={<ImageOutlinedIcon />}
+                                            iconSize={24}
+                                            bgColor="transparent"
+                                            onClick={() => handlePlaceholderAction("Image upload")}
+                                        />
+                                        <CustomIconButton
+                                            icon={<EmojiEmotionsOutlinedIcon />}
+                                            iconSize={24}
+                                            bgColor="transparent"
+                                            onClick={() => handlePlaceholderAction("Emoji picker")}
+                                        />
+                                    </Stack>
+                                </Box>
+
+                                <Stack
+                                    direction="row"
+                                    sx={{
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        gap: 2,
+                                    }}
+                                >
+                                    <CustomIconButton
+                                        sx={{ px: 1.75, py: 1.25 }}
+                                        loading={suggestLoading}
+                                        onClick={() => requestSecretarySuggestions(draft)}
+                                        icon={
+                                            <Stack
+                                                direction="row"
+                                                sx={{
+                                                    alignItems: "center",
+                                                    gap: 0.75,
+                                                }}
+                                            >
+                                                <AutoAwesomeIcon sx={{ fontSize: 18 }} />
+                                                <Typography sx={{ fontWeight: 600, fontSize: 12 }}>
+                                                    /secretary
+                                                </Typography>
+                                            </Stack>
+                                        }
+                                    />
+                                    <CustomIconButton
+                                        bgColor="violet.main"
+                                        sx={{
+                                            px: 1.75,
+                                            py: 1.25,
+                                            color: "white",
+                                        }}
+                                        loading={sendLoading}
+                                        onClick={() => void handleSend()}
+                                        icon={<SendIcon sx={{ fontSize: 20 }} />}
+                                    />
+                                </Stack>
+                            </Stack>
+                        </>
+                    ) : (
+                        <Box sx={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <Typography color="text.secondary">
+                                No conversations yet. Create one to start chatting.
+                            </Typography>
                         </Box>
                     )}
-
-                    <Stack
-                        direction="row"
-                        sx={{
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            gap: 2,
-                            backgroundColor: "white",
-                            border: "1px solid",
-                            borderColor: "violet.main",
-                            borderRadius: 10,
-                            px: 3,
-                            py: 2,
-                            width: "100%",
-                        }}
-                    >
-                        <Box sx={{ flex: 1 }}>
-                            <TextField
-                                fullWidth
-                                value={draft}
-                                onChange={(event) => setDraft(event.target.value)}
-                                onKeyDown={(event) => {
-                                    if (event.key === "Enter" && !event.shiftKey) {
-                                        event.preventDefault();
-                                        void handleSend();
-                                    }
-                                }}
-                                placeholder="Type /secretary to generate suggestions from the backend..."
-                                variant="standard"
-                                multiline
-                                maxRows={4}
-                                sx={{
-                                    "& .MuiInput-root": {
-                                        fontSize: 14,
-                                    },
-                                    "& .MuiInput-root:before, & .MuiInput-root:after":
-                                        {
-                                            borderBottom: "none !important",
-                                        },
-                                }}
-                            />
-                            <Stack direction="row" sx={{ gap: 0.25, mt: 1.25 }}>
-                                <CustomIconButton
-                                    icon={<AttachFileOutlinedIcon />}
-                                    iconSize={24}
-                                    bgColor="transparent"
-                                    onClick={() =>
-                                        handlePlaceholderAction("Attachment upload")
-                                    }
-                                />
-                                <CustomIconButton
-                                    icon={<ImageOutlinedIcon />}
-                                    iconSize={24}
-                                    bgColor="transparent"
-                                    onClick={() => handlePlaceholderAction("Image upload")}
-                                />
-                                <CustomIconButton
-                                    icon={<EmojiEmotionsOutlinedIcon />}
-                                    iconSize={24}
-                                    bgColor="transparent"
-                                    onClick={() => handlePlaceholderAction("Emoji picker")}
-                                />
-                            </Stack>
-                        </Box>
-
-                        <Stack
-                            direction="row"
-                            sx={{
-                                alignItems: "center",
-                                justifyContent: "center",
-                                gap: 2,
-                            }}
-                        >
-                            <CustomIconButton
-                                sx={{ px: 1.75, py: 1.25 }}
-                                loading={isLoading}
-                                onClick={() => requestSecretarySuggestions(draft)}
-                                icon={
-                                    <Stack
-                                        direction="row"
-                                        sx={{
-                                            alignItems: "center",
-                                            gap: 0.75,
-                                        }}
-                                    >
-                                        <AutoAwesomeIcon sx={{ fontSize: 18 }} />
-                                        <Typography sx={{ fontWeight: 600, fontSize: 12 }}>
-                                            /secretary
-                                        </Typography>
-                                    </Stack>
-                                }
-                            />
-                            <CustomIconButton
-                                bgColor="violet.main"
-                                sx={{
-                                    px: 1.75,
-                                    py: 1.25,
-                                    color: "white",
-                                }}
-                                onClick={() => void handleSend()}
-                                icon={<SendIcon sx={{ fontSize: 20 }} />}
-                            />
-                        </Stack>
-                    </Stack>
                 </Stack>
             </Stack>
         </Paper>
@@ -534,9 +513,7 @@ function MessageListItem({ active, conversation, onClick }) {
             onClick={onClick}
             sx={{
                 borderRadius: 5,
-                backgroundColor: active
-                    ? "secondary.main"
-                    : "background.default",
+                backgroundColor: active ? "secondary.main" : "background.default",
                 py: 2.5,
                 px: 3,
                 gap: 3,
@@ -558,19 +535,21 @@ function MessageListItem({ active, conversation, onClick }) {
                 >
                     <Box sx={{ minWidth: 0 }}>
                         <Typography sx={{ fontWeight: 600 }} noWrap>
-                            {conversation.participantName}
+                            {conversation.title || "Conversation"}
                         </Typography>
                         <Typography sx={{ fontWeight: 300 }} noWrap>
-                            {conversation.participantRole}
+                            {conversation.conversation_type || "chat"}
                         </Typography>
                     </Box>
                     <Typography sx={{ fontSize: 12, color: "text.secondary" }}>
-                        {conversation.timestamp}
+                        {conversation.last_message_at
+                            ? new Date(conversation.last_message_at).toLocaleDateString()
+                            : "Just now"}
                     </Typography>
                 </Stack>
 
                 <Typography sx={{ mt: 2 }} noWrap>
-                    {conversation.preview}
+                    {conversation.participants?.join(", ") || "No participants"}
                 </Typography>
             </Box>
         </Stack>
@@ -583,9 +562,7 @@ function MessageBubble({ content, isSentByUser }) {
             sx={{
                 alignSelf: isSentByUser ? "flex-end" : "flex-start",
                 maxWidth: "85%",
-                backgroundColor: isSentByUser
-                    ? "background.default"
-                    : "secondary.main",
+                backgroundColor: isSentByUser ? "background.default" : "secondary.main",
                 px: 3,
                 py: 2,
                 borderRadius: 2,

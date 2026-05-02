@@ -23,13 +23,13 @@ export default function WorkerPage() {
     //     }
     // }, [startProgress, completeProgress, isLoading]);
 
-    if (active === "PM Updates") {
+    if (active === "Project Overview") {
         return <TalentOverviewPage />;
-    } else if (active === "PM Tasks") {
+    } else if (active === "Task Board") {
         return <WorkerTrackerPage />;
-    } else if (active === "Secretary Reports") {
+    } else if (active === "Meeting Notes") {
         return <TalentReportPage />;
-    } else if (active === "Secretary Chat") {
+    } else if (active === "Team Chat") {
         return <WorkerMessagesPage />;
     }
 }

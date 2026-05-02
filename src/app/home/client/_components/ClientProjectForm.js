@@ -118,10 +118,14 @@ export default function ClientProjectForm({ onClose }) {
 
             const result = await post({ overview: body });
             if (result?.snapshot) {
-                console.log(
-                    "Project created with UUID: ",
-                    result?.snapshot?.project_id,
-                );
+                const newProjectId = result?.snapshot?.project_id;
+                console.log("Project created with UUID: ", newProjectId);
+                
+                mergeWorkspaceSession({
+                    project_id: newProjectId,
+                    project_name: formData.projectName,
+                });
+                
                 showSuccess("Project created successfully!");
                 onClose();
             }
@@ -145,7 +149,6 @@ export default function ClientProjectForm({ onClose }) {
                 }}
             >
                 <form onSubmit={handleSubmit}>
-                    {/* Title */}
                     <Typography
                         sx={{
                             fontSize: 28,
@@ -153,12 +156,11 @@ export default function ClientProjectForm({ onClose }) {
                             mb: 4,
                         }}
                     >
-                        Bootstrap PM workspace
+                        Create New Project
                     </Typography>
                     <Typography sx={{ mb: 4, color: "text.secondary" }}>
-                        Share the brief once. PM uses it to set up delivery, and
-                        Secretary uses the same context for meeting notes and
-                        summaries.
+                        Tell us about your project. We'll help you organize tasks,
+                        find the right talent, and track progress.
                     </Typography>
                     {/* Project Name & Description */}
                     <Grid container spacing={3} sx={{ mb: 4 }}>
