@@ -97,7 +97,7 @@ export default function ClientWeeklyUpdatesPage() {
                 ) : report ? (
                     <>
                         <Paper sx={{ p: 3, mb: 3 }}>
-                            <Stack direction="row" alignItems="center" spacing={2} mb={2}>
+                            <Stack direction="row" sx={{ alignItems: 'center' }} spacing={2} mb={2}>
                                 <Typography variant="h5" fontWeight={700}>
                                     Weekly Project Report
                                 </Typography>

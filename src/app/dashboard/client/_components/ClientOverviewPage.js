@@ -138,7 +138,7 @@ export default function ClientOverviewPage({ data }) {
 
     return (
         <Box>
-            <Stack direction="row" alignItems="center" spacing={0.5} sx={{ mb: 2 }}>
+            <Stack direction="row" sx={{ alignItems: 'center' }} spacing={0.5} mb={2}>
                 <Select
                     value={projectId || ""}
                     onChange={(e) => setActiveProject(e.target.value)}
